@@ -17,4 +17,12 @@ public class AssetBundleTest {
         assertThat(bundle.includesFile("/css/something.else"), is(false));
     }
 
+    @Test
+    public void testAddContentConcatenatesContent() {
+        AssetBundle bundle = new AssetBundle()
+                .addContent("Content1".getBytes())
+                .addContent("Content2".getBytes());
+
+        assertThat(bundle.getContent(), equalTo("Content1\r\nContent2\r\n".getBytes()));
+    }
 }
