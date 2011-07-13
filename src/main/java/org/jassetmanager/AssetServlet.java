@@ -46,7 +46,7 @@ public class AssetServlet extends HttpServlet {
 
     protected List<String> findAllAssetPaths() {
         final List<String> allAssetPaths = new ArrayList<String>();
-        AssetWalker.walkAssetTree(this.getServletContext(), "/", new AssetVisitor() {
+        AssetWalker.walkAssetTree(this.getServletContext(), ASSET_ROOT_PATH, new AssetVisitor() {
             public void visitAsset(@NotNull String path) {
                 allAssetPaths.add(path);
             }
