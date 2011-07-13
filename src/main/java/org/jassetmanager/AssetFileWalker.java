@@ -5,10 +5,10 @@ import com.sun.istack.internal.NotNull;
 import javax.servlet.ServletContext;
 import java.util.Set;
 
-public class AssetWalker {
-    public static void walkAssetTree(@NotNull ServletContext context,
-                                     @NotNull String rootPath,
-                                     @NotNull AssetVisitor visitor) {
+public class AssetFileWalker {
+    public static void walkAssetFiles(@NotNull ServletContext context,
+                                      @NotNull String rootPath,
+                                      @NotNull AssetFileVisitor visitor) {
         @SuppressWarnings("unchecked")
         Set<String> assetPaths = context.getResourcePaths(rootPath);
         if (assetPaths == null) {
@@ -17,9 +17,9 @@ public class AssetWalker {
         
         for (String assetPath : assetPaths) {
             if (isDirectory(assetPath)) {
-                walkAssetTree(context, assetPath, visitor);
+                walkAssetFiles(context, assetPath, visitor);
             } else {
-                visitor.visitAsset(assetPath);
+                visitor.visitFile(new AssetFile(assetPath));
             }
         }
     }

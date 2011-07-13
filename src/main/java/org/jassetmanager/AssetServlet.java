@@ -44,15 +44,15 @@ public class AssetServlet extends HttpServlet {
         }
     }
 
-    protected List<String> findAllAssetPaths() {
-        final List<String> allAssetPaths = new ArrayList<String>();
-        AssetWalker.walkAssetTree(this.getServletContext(), ASSET_ROOT_PATH, new AssetVisitor() {
-            public void visitAsset(@NotNull String path) {
-                allAssetPaths.add(path);
+    protected List<AssetFile> findAllAssetPaths() {
+        final List<AssetFile> allAssetAssetFiles = new ArrayList<AssetFile>();
+        AssetFileWalker.walkAssetFiles(this.getServletContext(), ASSET_ROOT_PATH, new AssetFileVisitor() {
+            public void visitFile(@NotNull AssetFile assetFile) {
+                allAssetAssetFiles.add(assetFile);
             }
         });
 
-        return allAssetPaths;
+        return allAssetAssetFiles;
     }
 
     protected void configureBundle(String requestPath, String serveAsMimeType, UserAgentMatcher userAgentMatcher, AssetBundleConfiguration config) {

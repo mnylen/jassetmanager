@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
 
-public class AssetWalkerTest {
+public class AssetFileWalkerTest {
     private ServletContext context;
     
     @Before
@@ -36,26 +36,26 @@ public class AssetWalkerTest {
 
     @Test
     public void testWalksAllAssetsRecursivelyInOrder() {
-        final List<String> visitedPaths = new ArrayList<String>();
-        AssetWalker.walkAssetTree(this.context, "/", new AssetVisitor() {
-            public void visitAsset(@NotNull String path) {
-                visitedPaths.add(path);
+        final List<AssetFile> visitedAssetFiles = new ArrayList<AssetFile>();
+        AssetFileWalker.walkAssetFiles(this.context, "/", new AssetFileVisitor() {
+            public void visitFile(@NotNull AssetFile assetFile) {
+                visitedAssetFiles.add(assetFile);
             }
         });
 
-        assertThat(visitedPaths.size(), equalTo(5));
-        assertThat(visitedPaths.get(0), equalTo("/js/lib/jquery.js"));
-        assertThat(visitedPaths.get(1), equalTo("/js/application.js"));
-        assertThat(visitedPaths.get(2), equalTo("/js/fileupload.js"));
-        assertThat(visitedPaths.get(3), equalTo("/css/application.css"));
-        assertThat(visitedPaths.get(4), equalTo("/css/buttons.css"));
+        assertThat(visitedAssetFiles.size(), equalTo(5));
+        assertThat(visitedAssetFiles.get(0), equalTo(new AssetFile("/js/lib/jquery.js")));
+        assertThat(visitedAssetFiles.get(1), equalTo(new AssetFile("/js/application.js")));
+        assertThat(visitedAssetFiles.get(2), equalTo(new AssetFile("/js/fileupload.js")));
+        assertThat(visitedAssetFiles.get(3), equalTo(new AssetFile("/css/application.css")));
+        assertThat(visitedAssetFiles.get(4), equalTo(new AssetFile("/css/buttons.css")));
     }
 
     @Test
     public void testDoesNotTryToWalkNullPaths() {
         when(this.context.getResourcePaths("/img/")).thenReturn(null);
-        AssetWalker.walkAssetTree(this.context, "/img/", new AssetVisitor() {
-            public void visitAsset(@NotNull String path) {
+        AssetFileWalker.walkAssetFiles(this.context, "/img/", new AssetFileVisitor() {
+            public void visitFile(@NotNull AssetFile assetFile) {
                 fail("Visited null");
             }
         });

@@ -1,6 +1,5 @@
 package org.jassetmanager;
 
-import java.rmi.registry.Registry;
 import java.util.*;
 
 public class AssetRegistry {

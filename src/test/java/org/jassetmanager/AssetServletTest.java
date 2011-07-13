@@ -5,9 +5,6 @@ import org.junit.Test;
 import org.mortbay.jetty.testing.HttpTester;
 import org.mortbay.jetty.testing.ServletTester;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
 

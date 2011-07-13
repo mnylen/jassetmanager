@@ -1,5 +1,5 @@
 package org.jassetmanager;
 
 public interface Manipulator {
-    public byte[] manipulate(AssetBundle bundle, String filePath, byte[] content, boolean isLast);
+    public byte[] manipulate(AssetBundle bundle, AssetFile assetFile, byte[] content, boolean isLast);
 }

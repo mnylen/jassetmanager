@@ -59,11 +59,11 @@ public class AssetBundleConfiguration {
         return this;
     }
 
-    public int getContentPosition(@NotNull String fileName) {
+    public int getContentPosition(@NotNull AssetFile assetFile) {
         int i = 0;
 
         for (FilePattern pattern : this.filePatterns) {
-            if (pattern.matches(fileName)) {
+            if (pattern.matches(assetFile)) {
                 return i;
             }
 

@@ -7,12 +7,12 @@ import static org.hamcrest.CoreMatchers.*;
 public class RegexFilePatternTest {
     @Test
     public void testMatchesPathAgainstTheRegex() {
-        String matchingPath = "/css/buttons.css";
-        String notMatchingPath = "/css/something.else";
+        AssetFile matchingAssetFile = new AssetFile("/css/buttons.css");
+        AssetFile notMatchingAssetFile = new AssetFile("/css/something.else");
         String regex = "/css/.+\\.css";
 
         FilePattern pattern = new RegexFilePattern(regex);
-        assertThat(pattern.matches(matchingPath), is(true));
-        assertThat(pattern.matches(notMatchingPath), is(false));
+        assertThat(pattern.matches(matchingAssetFile), is(true));
+        assertThat(pattern.matches(notMatchingAssetFile), is(false));
     }
 }

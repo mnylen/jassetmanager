@@ -13,7 +13,7 @@ public class RegexFilePattern implements FilePattern {
         this.regexPattern = pattern;
     }
 
-    public boolean matches(String path) {
-        return this.regexPattern.matcher(path).matches();
+    public boolean matches(AssetFile assetFile) {
+        return this.regexPattern.matcher(assetFile.getPath()).matches();
     }
 }

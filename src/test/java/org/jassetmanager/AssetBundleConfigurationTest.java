@@ -12,13 +12,13 @@ public class AssetBundleConfigurationTest {
                 .addFilePattern(new RegexFilePattern("/css/.+\\.css"))
                 .addFilePattern(new RegexFilePattern("/css/.+\\.less"));
 
-        assertThat(config.getContentPosition("/css/buttons.css"), is(0));
-        assertThat(config.getContentPosition("/css/buttons.less"), is(1));
-        assertThat(config.getContentPosition("/css/something.else"), is(-1));
+        assertThat(config.getContentPosition(new AssetFile("/css/buttons.css")), is(0));
+        assertThat(config.getContentPosition(new AssetFile("/css/buttons.less")), is(1));
+        assertThat(config.getContentPosition(new AssetFile("/css/something.else")), is(-1));
     }
 
     @Test
-    public void testConstructorWithBaseConfigurationIncludesFilePatternsFromBase() {
+    public void testConstructorWithBaseConfigurationIncludesBaseConfiguration() {
         AssetBundleConfiguration baseConfiguration = new AssetBundleConfiguration()
                 .addFilePattern("pattern1")
                 .addFilePattern("pattern2");
@@ -26,9 +26,9 @@ public class AssetBundleConfigurationTest {
         AssetBundleConfiguration derivedConfiguration = new AssetBundleConfiguration(baseConfiguration)
                 .addFilePattern("pattern3");
 
-        assertThat(derivedConfiguration.getContentPosition("pattern1"), is(0));
-        assertThat(derivedConfiguration.getContentPosition("pattern2"), is(1));
-        assertThat(derivedConfiguration.getContentPosition("pattern3"), is(2));
+        assertThat(derivedConfiguration.getContentPosition(new AssetFile("pattern1")), is(0));
+        assertThat(derivedConfiguration.getContentPosition(new AssetFile("pattern2")), is(1));
+        assertThat(derivedConfiguration.getContentPosition(new AssetFile("pattern3")), is(2));
     }
 
     @Test
@@ -41,6 +41,6 @@ public class AssetBundleConfigurationTest {
                 .addFilePattern("pattern3");
 
         baseConfiguration.addFilePattern("pattern4");
-        assertThat(derivedConfiguration.getContentPosition("pattern4"), is(-1));
+        assertThat(derivedConfiguration.getContentPosition(new AssetFile("pattern4")), is(-1));
     }
 }
