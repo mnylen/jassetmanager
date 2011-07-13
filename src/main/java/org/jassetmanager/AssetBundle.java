@@ -5,10 +5,7 @@ import com.sun.istack.internal.NotNull;
 import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AssetBundle {
     private byte[] content;
@@ -35,19 +32,38 @@ public class AssetBundle {
     }
 
     public void build(@NotNull List<String> allFilePaths) throws IOException {
-
         this.content = new byte[0];
         this.built = false;
+
+        Map<Integer, List<String>> contentMap = createContentMap(allFilePaths);
+        readAndAppendFilesFromContentMap(contentMap);
         
+        this.built = true;
+    }
+
+    private void readAndAppendFilesFromContentMap(Map<Integer, List<String>> contentMap) throws IOException {
+        List<Integer> keys = new ArrayList<Integer>(contentMap.keySet());
+        Collections.sort(keys);
+
+        for (Integer position : keys) {
+            List<String> files = contentMap.get(position);
+            readAndAppendFiles(files);
+        }
+    }
+
+    private void readAndAppendFiles(List<String> files) throws IOException {
+        for (String file : files) {
+            readAndAppendFile(file);
+        }
+    }
+
+    private Map<Integer, List<String>> createContentMap(List<String> allFilePaths) {
         Map<Integer, List<String>> contentMap = new HashMap<Integer, List<String>>();
-        int maxPosition = 0;
 
         for (String filePath : allFilePaths) {
             int position = this.config.getContentPosition(filePath);
             if (position == -1) {
                 continue;
-            } else if (position > maxPosition) {
-                maxPosition = position;
             }
 
             if (!(contentMap.containsKey(position))) {
@@ -57,26 +73,15 @@ public class AssetBundle {
             contentMap.get(position).add(filePath);
         }
 
-        for (int position = 0; position <= maxPosition; position++) {
-            if (!(contentMap.containsKey(position))) {
-                continue;
-            }
-            
-            List<String> filePaths = contentMap.get(position);
-            for (String filePath : filePaths) {
-                readAndAppendContent(this.context, filePath);
-            }
-        }
-
-        this.built = true;
+        return contentMap;
     }
 
-    private void readAndAppendContent(ServletContext context, String filePath) throws IOException {
+    private void readAndAppendFile(String filePath) throws IOException {
         byte[] buffer = new byte[1024];
         InputStream is = null;
 
         try {
-            is = context.getResourceAsStream(filePath);
+            is = this.context.getResourceAsStream(filePath);
             if (is == null) {
                 throw new IOException("Could not open stream to asset '" + filePath + "'");
             }
@@ -85,7 +90,7 @@ public class AssetBundle {
                 int length = is.read(buffer);
 
                 if (length != -1) {
-                    appendContent(buffer, length);
+                    appendFileContent(buffer, length);
                 }
             }
         } finally {
@@ -99,7 +104,7 @@ public class AssetBundle {
         }
     }
 
-    private void appendContent(byte[] append, int appendLength) {
+    private void appendFileContent(byte[] append, int appendLength) {
         int newContentLength = this.content.length + ASSET_SEPARATOR.length + appendLength;
 
         byte[] newContent = new byte[newContentLength];
