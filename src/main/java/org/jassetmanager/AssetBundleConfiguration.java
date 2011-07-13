@@ -7,9 +7,13 @@ import java.util.List;
 
 public class AssetBundleConfiguration {
     private final List<FilePattern> filePatterns;
+    private final List<Manipulator> preManipulators;
+    private final List<Manipulator> postManipulators;
 
     public AssetBundleConfiguration() {
         this.filePatterns = new ArrayList<FilePattern>();
+        this.preManipulators = new ArrayList<Manipulator>();
+        this.postManipulators = new ArrayList<Manipulator>();
     }
 
     public AssetBundleConfiguration(AssetBundleConfiguration baseConfiguration) {
@@ -20,6 +24,14 @@ public class AssetBundleConfiguration {
     public AssetBundleConfiguration includeConfiguration(AssetBundleConfiguration configuration) {
         for (FilePattern pattern : configuration.getFilePatterns()) {
             this.addFilePattern(pattern);
+        }
+
+        for (Manipulator preManipulator : configuration.getPreManipulators()) {
+            this.addPreManipulator(preManipulator);
+        }
+
+        for (Manipulator postManipulator : configuration.getPostManipulators()) {
+            this.addPostManipulator(postManipulator);
         }
         
         return this;
@@ -59,5 +71,23 @@ public class AssetBundleConfiguration {
         }
 
         return -1;
+    }
+
+    public List<Manipulator> getPreManipulators() {
+        return preManipulators;
+    }
+
+    public AssetBundleConfiguration addPreManipulator(Manipulator manipulator) {
+        this.preManipulators.add(manipulator);
+        return this;
+    }
+
+    public List<Manipulator> getPostManipulators() {
+        return postManipulators;
+    }
+
+    public AssetBundleConfiguration addPostManipulator(Manipulator manipulator) {
+        this.postManipulators.add(manipulator);
+        return this;
     }
 }
