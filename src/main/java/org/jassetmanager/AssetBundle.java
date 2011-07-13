@@ -13,9 +13,15 @@ import java.util.Map;
 public class AssetBundle {
     private byte[] content;
     private boolean built;
+    private final ServletContext context;
+    private final AssetBundleConfiguration config;
     private static final byte[] ASSET_SEPARATOR = new byte[] { '\r', '\n' };
 
-    public AssetBundle() {
+    public AssetBundle(@NotNull AssetBundleConfiguration config,
+                       @NotNull ServletContext context) {
+
+        this.context = context;
+        this.config = config;
         this.content = new byte[0];
         this.built = false;
     }
@@ -28,10 +34,7 @@ public class AssetBundle {
         return this.content;
     }
 
-    public void build(@NotNull AssetBundleConfiguration config,
-                      @NotNull ServletContext context,
-                      @NotNull String userAgent,
-                      @NotNull List<String> allFilePaths) throws IOException {
+    public void build(@NotNull List<String> allFilePaths) throws IOException {
 
         this.content = new byte[0];
         this.built = false;
@@ -40,7 +43,7 @@ public class AssetBundle {
         int maxPosition = 0;
 
         for (String filePath : allFilePaths) {
-            int position = config.getContentPosition(filePath);
+            int position = this.config.getContentPosition(filePath);
             if (position == -1) {
                 continue;
             } else if (position > maxPosition) {
@@ -61,7 +64,7 @@ public class AssetBundle {
             
             List<String> filePaths = contentMap.get(position);
             for (String filePath : filePaths) {
-                readAndAppendContent(context, filePath);
+                readAndAppendContent(this.context, filePath);
             }
         }
 
