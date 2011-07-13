@@ -16,8 +16,6 @@ public class AssetWalker {
         }
         
         for (String assetPath : assetPaths) {
-            System.out.println(assetPath);
-            
             if (isDirectory(assetPath)) {
                 walkAssetTree(context, assetPath, visitor);
             } else {
