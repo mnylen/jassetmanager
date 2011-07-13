@@ -3,8 +3,10 @@ package org.jassetmanager;
 import com.sun.istack.internal.NotNull;
 
 import javax.servlet.ServletContext;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.PrivateKey;
 import java.util.*;
 
 public class AssetBundle {
@@ -45,15 +47,19 @@ public class AssetBundle {
         List<Integer> keys = new ArrayList<Integer>(contentMap.keySet());
         Collections.sort(keys);
 
+        ByteArrayOutputStream to = new ByteArrayOutputStream();
+
         for (Integer position : keys) {
             List<String> files = contentMap.get(position);
-            readAndAppendFiles(files);
+            readAndAppendFiles(files, to);
         }
+
+        this.content = to.toByteArray();
     }
 
-    private void readAndAppendFiles(List<String> files) throws IOException {
+    private void readAndAppendFiles(List<String> files, ByteArrayOutputStream to) throws IOException {
         for (String file : files) {
-            readAndAppendFile(file);
+            readAndAppendFile(file, to);
         }
     }
 
@@ -76,7 +82,7 @@ public class AssetBundle {
         return contentMap;
     }
 
-    private void readAndAppendFile(String filePath) throws IOException {
+    private void readAndAppendFile(String filePath, ByteArrayOutputStream to) throws IOException {
         byte[] buffer = new byte[1024];
         InputStream is = null;
 
@@ -86,13 +92,8 @@ public class AssetBundle {
                 throw new IOException("Could not open stream to asset '" + filePath + "'");
             }
 
-            while (is.available() > 0) {
-                int length = is.read(buffer);
-
-                if (length != -1) {
-                    appendFileContent(buffer, length);
-                }
-            }
+            to.write(ResourceUtil.readInputStream(is));
+            to.write(ASSET_SEPARATOR);
         } finally {
             try {
                 if (is != null) {
@@ -102,16 +103,5 @@ public class AssetBundle {
 
             }
         }
-    }
-
-    private void appendFileContent(byte[] append, int appendLength) {
-        int newContentLength = this.content.length + ASSET_SEPARATOR.length + appendLength;
-
-        byte[] newContent = new byte[newContentLength];
-        System.arraycopy(this.content, 0, newContent, 0, this.content.length);
-        System.arraycopy(append, 0, newContent, this.content.length, appendLength);
-        System.arraycopy(ASSET_SEPARATOR, 0, newContent, (this.content.length + appendLength), ASSET_SEPARATOR.length);
-
-        this.content = newContent;
     }
 }
