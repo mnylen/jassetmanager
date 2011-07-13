@@ -12,6 +12,23 @@ public class AssetBundleConfiguration {
         this.filePatterns = new ArrayList<FilePattern>();
     }
 
+    public AssetBundleConfiguration(AssetBundleConfiguration baseConfiguration) {
+        this();
+        includeConfiguration(baseConfiguration);
+    }
+
+    public AssetBundleConfiguration includeConfiguration(AssetBundleConfiguration configuration) {
+        for (FilePattern pattern : configuration.getFilePatterns()) {
+            this.addFilePattern(pattern);
+        }
+        
+        return this;
+    }
+
+    public List<FilePattern> getFilePatterns() {
+        return filePatterns;
+    }
+
     public AssetBundleConfiguration addFilePattern(FilePattern pattern) {
         if (pattern == null) {
             throw new IllegalArgumentException("pattern must not be null");
