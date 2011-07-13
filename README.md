@@ -62,7 +62,7 @@ include _ie.css_ for all versions of Internet Explorer as follows:
 			
 			AssetBundleConfiguration baseConfiguration = new AssetBundleConfiguration()
 				.addFilePattern("/static/css/reset.css"))
-				.addFilePattern("/static/css/main.css"));
+				.addFilePattern("/static/css/main.css");
 				
 			AssetBundleConfiguration ieConfiguration = new AssetBundleConfiguration(baseConfiguration)
 				.addFilePattern("/static/css/ie.css");
