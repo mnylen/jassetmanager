@@ -1,5 +1,6 @@
 package org.jassetmanager;
 
+import com.sun.istack.internal.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,6 +10,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
@@ -36,7 +38,7 @@ public class AssetWalkerTest {
     public void testWalksAllAssetsRecursivelyInOrder() {
         final List<String> visitedPaths = new ArrayList<String>();
         AssetWalker.walkAssetTree(this.context, "/", new AssetVisitor() {
-            public void visitAsset(String path) {
+            public void visitAsset(@NotNull String path) {
                 visitedPaths.add(path);
             }
         });
@@ -47,5 +49,15 @@ public class AssetWalkerTest {
         assertThat(visitedPaths.get(2), equalTo("/js/fileupload.js"));
         assertThat(visitedPaths.get(3), equalTo("/css/application.css"));
         assertThat(visitedPaths.get(4), equalTo("/css/buttons.css"));
+    }
+
+    @Test
+    public void testDoesNotTryToWalkNullPaths() {
+        when(this.context.getResourcePaths("/img/")).thenReturn(null);
+        AssetWalker.walkAssetTree(this.context, "/img/", new AssetVisitor() {
+            public void visitAsset(@NotNull String path) {
+                fail("Visited null");
+            }
+        });
     }
 }

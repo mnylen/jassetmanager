@@ -1,13 +1,20 @@
 package org.jassetmanager;
 
+import com.sun.istack.internal.NotNull;
+
 import javax.servlet.ServletContext;
 import java.util.Set;
 
 public class AssetWalker {
-    public static void walkAssetTree(ServletContext context, String rootPath, AssetVisitor visitor) {
+    public static void walkAssetTree(@NotNull ServletContext context,
+                                     @NotNull String rootPath,
+                                     @NotNull AssetVisitor visitor) {
         @SuppressWarnings("unchecked")
         Set<String> assetPaths = context.getResourcePaths(rootPath);
-
+        if (assetPaths == null) {
+            return;
+        }
+        
         for (String assetPath : assetPaths) {
             System.out.println(assetPath);
             
