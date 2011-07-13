@@ -1,5 +1,9 @@
 # jAssetManager
 
+**NOTE: jAssetManager is a work in progress. This README might not reflect
+the reality very accurately. Everything is subject to change and nothing is
+thoroughly tested. You've been warned.**
+
 ## What?
 
 jAssetManager manages static assets in your Java web application, concatenating
@@ -76,3 +80,9 @@ header will be served. In the above case, if a browser identifying itself as
 Google Chrome would request the asset bundle, the normal version would
 be served. If Internet Explorer on the other hand would do the same
 request, it would be served the normal bundle plus the _ie.css_ file.
+
+## License
+
+Copyright (&copy;) 2011 Mikko Nylén
+
+See LICENSE
