@@ -1,0 +1,6 @@
+.DS_Store
+out/
+
+# IntelliJ IDEA files
+.idea/
+jassetmanager.iml
