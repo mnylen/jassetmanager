@@ -8,7 +8,7 @@ import org.jassetmanager.RegexFilePattern;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
-public class TestAssetServlet extends AssetServlet {
+public class SimpleAssetConcatenationServlet extends AssetServlet {
     protected AssetBundleConfiguration config;
     
     @Override

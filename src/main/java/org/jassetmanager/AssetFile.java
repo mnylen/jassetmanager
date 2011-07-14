@@ -1,14 +1,27 @@
 package org.jassetmanager;
 
+import javax.servlet.ServletContext;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class AssetFile {
     private final String path;
-
-    public AssetFile(String path) {
+    private final ServletContext context;
+    private final URL url;
+    
+    public AssetFile(String path, ServletContext context) throws MalformedURLException {
         this.path = path;
+        this.context = context;
+        this.url = context.getResource(this.path);
     }
 
     public String getPath() {
         return path;
+    }
+
+    public long getLastModified() throws IOException {
+        return this.url.openConnection().getLastModified();
     }
 
     @Override

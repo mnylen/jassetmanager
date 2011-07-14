@@ -1,6 +1,6 @@
 package org.jassetmanager;
 
-import org.jassetmanager.testservlets.TestAssetServlet;
+import org.jassetmanager.testservlets.SimpleAssetConcatenationServlet;
 import org.junit.Before;
 import org.junit.Test;
 import org.mortbay.jetty.testing.HttpTester;
@@ -19,7 +19,7 @@ public class AssetServletTest {
         this.tester.setClassLoader(AssetServlet.class.getClassLoader());
         this.tester.setContextPath("/");
         this.tester.setResourceBase("src/test/resources");
-        this.tester.addServlet(TestAssetServlet.class, "*.css");
+        this.tester.addServlet(SimpleAssetConcatenationServlet.class, "*.css");
         this.tester.start();
     }
 

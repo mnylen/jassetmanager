@@ -1,5 +1,7 @@
 package org.jassetmanager;
 
+import org.jassetmanager.testmanipulators.AddCopyrightNoticeManipulator;
+import org.jassetmanager.testmanipulators.FileNameAppenderManipulator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,7 +23,7 @@ public class AssetBundleManipulatorsTest {
     private AssetBundle bundle;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         ServletContext mockContext = mock(ServletContext.class);
         when(mockContext.getResourceAsStream("/css/reset.css")).thenReturn(
                 new ByteArrayInputStream("html, body { margin: 0; }".getBytes()));
@@ -30,7 +32,7 @@ public class AssetBundleManipulatorsTest {
                 new ByteArrayInputStream("body { background-color: #000; }".getBytes()));
 
         this.allAssetFiles = new ArrayList<AssetFile>(Arrays.asList(
-                new AssetFile("/css/main.css"), new AssetFile("/css/reset.css")));
+                new AssetFile("/css/main.css", mockContext), new AssetFile("/css/reset.css", mockContext)));
 
         AssetBundleConfiguration config = new AssetBundleConfiguration()
                 .addFilePattern(new RegexFilePattern("/css/reset.css"))

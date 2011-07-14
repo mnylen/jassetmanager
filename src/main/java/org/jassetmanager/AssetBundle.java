@@ -42,6 +42,10 @@ public class AssetBundle {
         this.built = true;
     }
 
+    public long getLastModified() {
+        return 0;
+    }
+
     private void readAndAppendFilesFromContentMap(Map<Integer, List<AssetFile>> contentMap) throws IOException {
         List<Integer> keys = new ArrayList<Integer>(contentMap.keySet());
         Collections.sort(keys);

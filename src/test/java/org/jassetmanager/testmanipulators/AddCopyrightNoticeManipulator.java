@@ -1,4 +1,8 @@
-package org.jassetmanager;
+package org.jassetmanager.testmanipulators;
+
+import org.jassetmanager.AssetBundle;
+import org.jassetmanager.AssetFile;
+import org.jassetmanager.Manipulator;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

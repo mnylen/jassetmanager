@@ -35,7 +35,7 @@ public class AssetFileWalkerTest {
     }
 
     @Test
-    public void testWalksAllAssetsRecursivelyInOrder() {
+    public void testWalksAllAssetsRecursivelyInOrder() throws Exception {
         final List<AssetFile> visitedAssetFiles = new ArrayList<AssetFile>();
         AssetFileWalker.walkAssetFiles(this.context, "/", new AssetFileVisitor() {
             public void visitFile(@NotNull AssetFile assetFile) {
@@ -44,11 +44,11 @@ public class AssetFileWalkerTest {
         });
 
         assertThat(visitedAssetFiles.size(), equalTo(5));
-        assertThat(visitedAssetFiles.get(0), equalTo(new AssetFile("/js/lib/jquery.js")));
-        assertThat(visitedAssetFiles.get(1), equalTo(new AssetFile("/js/application.js")));
-        assertThat(visitedAssetFiles.get(2), equalTo(new AssetFile("/js/fileupload.js")));
-        assertThat(visitedAssetFiles.get(3), equalTo(new AssetFile("/css/application.css")));
-        assertThat(visitedAssetFiles.get(4), equalTo(new AssetFile("/css/buttons.css")));
+        assertThat(visitedAssetFiles.get(0), equalTo(new AssetFile("/js/lib/jquery.js", this.context)));
+        assertThat(visitedAssetFiles.get(1), equalTo(new AssetFile("/js/application.js", this.context)));
+        assertThat(visitedAssetFiles.get(2), equalTo(new AssetFile("/js/fileupload.js", this.context)));
+        assertThat(visitedAssetFiles.get(3), equalTo(new AssetFile("/css/application.css", this.context)));
+        assertThat(visitedAssetFiles.get(4), equalTo(new AssetFile("/css/buttons.css", this.context)));
     }
 
     @Test

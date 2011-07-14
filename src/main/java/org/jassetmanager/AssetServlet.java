@@ -13,6 +13,7 @@ import java.util.List;
 public class AssetServlet extends HttpServlet {
     private final AssetRegistry registry;
     private static final String USER_AGENT_HEADER = "User-Agent";
+    private static final String IF_MODIFIED_SINCE_HEADER = "If-Modified-Since";
     private static final String ASSET_ROOT_PATH = "/";
 
     private boolean cache;
@@ -44,18 +45,26 @@ public class AssetServlet extends HttpServlet {
             return;
         } else {
             AssetBundle bundle = registryEntry.getBundle();
-            if (isBundleRebuildNeeded(bundle, request)) {
+            if (isBundleRebuildNeeded(bundle)) {
                 bundle.build(findAllAssetPaths());
             }
 
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType(registryEntry.getServeAsMimeType());
-            response.setContentLength(bundle.getContent().length);
-            response.getOutputStream().write(bundle.getContent());
+            if (isBundleModified(bundle, request)) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType(registryEntry.getServeAsMimeType());
+                response.setContentLength(bundle.getContent().length);
+                response.getOutputStream().write(bundle.getContent());
+            } else {
+                response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            }
         }
     }
 
-    protected boolean isBundleRebuildNeeded(AssetBundle bundle, HttpServletRequest request) {
+    protected boolean isBundleModified(AssetBundle bundle, HttpServletRequest request) {
+        return true;
+    }
+
+    protected boolean isBundleRebuildNeeded(AssetBundle bundle) {
         if (!(bundle.isBuilt())) {
             return true;
         } else {

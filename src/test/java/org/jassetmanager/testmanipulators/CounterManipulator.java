@@ -1,4 +1,8 @@
-package org.jassetmanager;
+package org.jassetmanager.testmanipulators;
+
+import org.jassetmanager.AssetBundle;
+import org.jassetmanager.AssetFile;
+import org.jassetmanager.Manipulator;
 
 public class CounterManipulator implements Manipulator {
     public static int counter = 1;

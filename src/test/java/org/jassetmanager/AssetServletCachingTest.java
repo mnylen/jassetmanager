@@ -1,8 +1,8 @@
 package org.jassetmanager;
 
+import org.jassetmanager.testmanipulators.CounterManipulator;
 import org.jassetmanager.testservlets.CachingAssetServlet;
 import org.jassetmanager.testservlets.NonCachingAssetServlet;
-import org.jassetmanager.testservlets.TestAssetServlet;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertThat;

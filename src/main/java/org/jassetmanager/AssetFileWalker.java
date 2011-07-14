@@ -3,6 +3,7 @@ package org.jassetmanager;
 import com.sun.istack.internal.NotNull;
 
 import javax.servlet.ServletContext;
+import java.net.MalformedURLException;
 import java.util.Set;
 
 public class AssetFileWalker {
@@ -19,7 +20,11 @@ public class AssetFileWalker {
             if (isDirectory(assetPath)) {
                 walkAssetFiles(context, assetPath, visitor);
             } else {
-                visitor.visitFile(new AssetFile(assetPath));
+                try {
+                    visitor.visitFile(new AssetFile(assetPath, context));
+                } catch (MalformedURLException e) {
+                    
+                }
             }
         }
     }
