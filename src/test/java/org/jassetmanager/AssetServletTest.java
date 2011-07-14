@@ -1,5 +1,6 @@
 package org.jassetmanager;
 
+import org.jassetmanager.testservlets.TestAssetServlet;
 import org.junit.Before;
 import org.junit.Test;
 import org.mortbay.jetty.testing.HttpTester;

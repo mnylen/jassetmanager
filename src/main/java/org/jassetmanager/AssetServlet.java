@@ -15,8 +15,19 @@ public class AssetServlet extends HttpServlet {
     private static final String USER_AGENT_HEADER = "User-Agent";
     private static final String ASSET_ROOT_PATH = "/";
 
+    private boolean cache;
+
     public AssetServlet() {
         this.registry = new AssetRegistry();
+        this.cache = true;
+    }
+
+    public void setCache(boolean cache) {
+        this.cache = cache;
+    }
+
+    public boolean isCacheEnabled() {
+        return cache;
     }
 
     @Override
@@ -33,7 +44,7 @@ public class AssetServlet extends HttpServlet {
             return;
         } else {
             AssetBundle bundle = registryEntry.getBundle();
-            if (!(bundle.isBuilt())) {
+            if (isBundleRebuildNeeded(bundle, request)) {
                 bundle.build(findAllAssetPaths());
             }
 
@@ -42,6 +53,18 @@ public class AssetServlet extends HttpServlet {
             response.setContentLength(bundle.getContent().length);
             response.getOutputStream().write(bundle.getContent());
         }
+    }
+
+    protected boolean isBundleRebuildNeeded(AssetBundle bundle, HttpServletRequest request) {
+        if (!(bundle.isBuilt())) {
+            return true;
+        } else {
+            if (!(cache)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected List<AssetFile> findAllAssetPaths() {
