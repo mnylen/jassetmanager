@@ -53,7 +53,7 @@ public class AssetBundle {
             readAndAppendFiles(files, to);
         }
 
-        this.content = to.toByteArray();
+        this.content = postManipulate(to.toByteArray());
     }
 
     private void readAndAppendFiles(List<AssetFile> assetFiles, ByteArrayOutputStream to) throws IOException {
@@ -90,7 +90,7 @@ public class AssetBundle {
                 throw new IOException("Could not open stream to asset '" + assetFile + "'");
             }
 
-            to.write(ResourceUtil.readInputStream(is));
+            to.write(preManipulate(assetFile, ResourceUtil.readInputStream(is)));
             to.write(ASSET_SEPARATOR);
         } finally {
             try {
@@ -101,5 +101,21 @@ public class AssetBundle {
 
             }
         }
+    }
+
+    private byte[] preManipulate(AssetFile assetFile, byte[] content) {
+        for (Manipulator manipulator : this.config.getPreManipulators()) {
+            content = manipulator.manipulate(this, assetFile, content);
+        }
+
+        return content;
+    }
+
+    private byte[] postManipulate(byte[] content) {
+        for (Manipulator manipulator : this.config.getPostManipulators()) {
+            content = manipulator.manipulate(this, null, content);
+        }
+
+        return content;
     }
 }
