@@ -81,6 +81,42 @@ Google Chrome would request the asset bundle, the normal version would
 be served. If Internet Explorer on the other hand would do the same
 request, it would be served the normal bundle plus the _ie.css_ file.
 
+## Manipulators
+
+A `Manipulator` is a tool that manipulates the asset or bundle content in some way.
+Manipulators can be configured either as _pre-manipulators_ or _post-manipulators_.
+The difference is, pre-manipulators are run for each individual asset file, while
+post-manipulators are run for the whole concatenated asset bundle.
+
+Some example usage cases for pre-manipulators might include:
+
+* Compiling assets from CoffeeScript to JavaScript (or from SASS/LESS to CSS).
+* Wrapping JavaScript code inside a safe wrapper.
+* Inserting the asset file name as comment.
+
+...and for post-manipulators:
+
+* Minifying the asset bundle using YUI Compressor or such.
+* Replacing image references with base64.
+* Inserting copyright notice at the top of the bundle.
+
+To use, just simply add the manipulators you want while configuring the bundle:
+
+	public class MyAssetServlet extends AssetServlet {
+		@Override
+		public void init(ServletConfig config) throws ServletException {
+			super.init(config);
+			
+			configureBundle("/assets/css/application.css", "text/css", BrowserMatchers.ANY,
+				new AssetBundleConfiguration()
+					.addFilePattern("/static/css/reset.scss"))
+					.addFilePattern("/static/css/main.scss")
+					.addPreManipualtor(new CompileSASSManipulator())
+					.addPostManipulator(new MinifyCSSWithYUICompressorManipulator());
+				
+		}
+	}
+
 ## License
 
 Copyright (&copy;) 2011 Mikko Nylén
