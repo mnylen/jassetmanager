@@ -45,35 +45,45 @@ public class AssetServlet extends HttpServlet {
             return;
         } else {
             AssetBundle bundle = registryEntry.getBundle();
-            if (isBundleRebuildNeeded(bundle)) {
-                bundle.build(findAllAssetPaths());
-            }
+            rebuildBundleIfNeeded(bundle);
 
-            if (isBundleModified(bundle, request)) {
+            if (!(isBundleModified(bundle, request))) {
+                response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            } else {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.setContentType(registryEntry.getServeAsMimeType());
                 response.setContentLength(bundle.getContent().length);
                 response.getOutputStream().write(bundle.getContent());
-            } else {
-                response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
             }
         }
     }
 
-    protected boolean isBundleModified(AssetBundle bundle, HttpServletRequest request) {
-        return true;
-    }
-
-    protected boolean isBundleRebuildNeeded(AssetBundle bundle) {
-        if (!(bundle.isBuilt())) {
-            return true;
+    protected void rebuildBundleIfNeeded(AssetBundle bundle) throws IOException {
+        if (cache && bundle.isBuilt()) {
+            return;
         } else {
-            if (!(cache)) {
-                return true;
+            if (!(bundle.isBuilt())) {
+                bundle.build(findAllAssetPaths());
+            } else {
+                List<AssetFile> allAssetFiles = findAllAssetPaths();
+
+                long lastModifiedAt = bundle.getLastModified(allAssetFiles);
+                if (lastModifiedAt > bundle.getBuiltAt()) {
+                    bundle.build(allAssetFiles);
+                }
             }
         }
+    }
+    
+    protected boolean isBundleModified(AssetBundle bundle, HttpServletRequest request)
+        throws IOException {
 
-        return false;
+        long ifModifiedSince = request.getDateHeader(IF_MODIFIED_SINCE_HEADER);
+        if (ifModifiedSince > 0) {
+            return bundle.getBuiltAt() > ifModifiedSince;
+        }
+
+        return true;
     }
 
     protected List<AssetFile> findAllAssetPaths() {

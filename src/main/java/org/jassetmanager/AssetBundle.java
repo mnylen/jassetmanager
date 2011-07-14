@@ -14,7 +14,8 @@ public class AssetBundle {
     private final ServletContext context;
     private final AssetBundleConfiguration config;
     private static final byte[] ASSET_SEPARATOR = new byte[] { '\r', '\n' };
-
+    private long builtAt;
+    
     public AssetBundle(@NotNull AssetBundleConfiguration config,
                        @NotNull ServletContext context) {
 
@@ -32,18 +33,35 @@ public class AssetBundle {
         return this.content;
     }
 
+    public long getBuiltAt() {
+        return builtAt;
+    }
+
     public void build(@NotNull List<AssetFile> allAssetFiles) throws IOException {
         this.content = new byte[0];
         this.built = false;
 
         Map<Integer, List<AssetFile>> contentMap = createContentMap(allAssetFiles);
         readAndAppendFilesFromContentMap(contentMap);
-        
+
+        this.builtAt = System.currentTimeMillis();
         this.built = true;
     }
 
-    public long getLastModified() {
-        return 0;
+    public long getLastModified(List<AssetFile> allFiles) throws IOException {
+        long max = 0;
+
+        for (AssetFile file : allFiles) {
+            if (this.config.getContentPosition(file) != -1) {
+                long lastModified = file.getLastModified();
+
+                if (lastModified > max) {
+                    max = lastModified;
+                }
+            }
+        }
+
+        return max;
     }
 
     private void readAndAppendFilesFromContentMap(Map<Integer, List<AssetFile>> contentMap) throws IOException {

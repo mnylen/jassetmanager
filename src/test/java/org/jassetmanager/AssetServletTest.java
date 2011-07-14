@@ -6,6 +6,9 @@ import org.junit.Test;
 import org.mortbay.jetty.testing.HttpTester;
 import org.mortbay.jetty.testing.ServletTester;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
 
@@ -25,14 +28,23 @@ public class AssetServletTest {
 
     @Test
     public void testBuildsAndOutputsBundleContent() throws Exception {
-        HttpTester request = new HttpTester();
-        request.setMethod("GET");
-        request.setHeader("Host", "tester");
-        request.setVersion("HTTP/1.1");
-        request.setURI("/css/application.css");
+        HttpTester response = RequestUtil.getResponse(tester, "/css/application.css");
 
-        HttpTester response = new HttpTester();
-        response.parse(tester.getResponses(request.generate()));
+        assertThat(response.getContent(),
+                equalTo("html, body { margin: 0; }\r\nbody { background-color: #000; }\r\n"));
+    }
+    
+    @Test
+    public void testRespondsWithNotModifiedWhenTheBundleHasNotBeenModified() throws Exception {
+        HttpTester response = RequestUtil.getResponse(tester, "/css/application.css", System.currentTimeMillis()+60000);
+
+        assertThat(response.getContent(), nullValue());
+        assertThat(response.getStatus(), is(HttpServletResponse.SC_NOT_MODIFIED));
+    }
+
+    @Test
+    public void testRespondsWithContentWhenThebundleHasBeenModified() throws Exception {
+        HttpTester response = RequestUtil.getResponse(tester, "/css/application.css", 100L);
 
         assertThat(response.getContent(),
                 equalTo("html, body { margin: 0; }\r\nbody { background-color: #000; }\r\n"));
