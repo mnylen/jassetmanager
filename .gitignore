@@ -1,6 +1,9 @@
 .DS_Store
 out/
+build/
+target/
 
 # IntelliJ IDEA files
 .idea/
 jassetmanager.iml
+
