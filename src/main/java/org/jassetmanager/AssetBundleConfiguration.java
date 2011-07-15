@@ -54,6 +54,14 @@ public class AssetBundleConfiguration {
         for (Manipulator postManipulator : configuration.getPostManipulators()) {
             this.addPostManipulator(postManipulator);
         }
+
+        if (this.buildStrategy == BuildStrategies.BUILD_ONCE) {
+            this.buildStrategy = configuration.getBuildStrategy();
+        }
+
+        if (this.contextRootPath == AssetServlet.ASSET_ROOT_PATH) {
+            this.contextRootPath = configuration.getContextRootPath();
+        }
         
         return this;
     }
