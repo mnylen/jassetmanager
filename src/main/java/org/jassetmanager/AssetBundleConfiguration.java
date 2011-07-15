@@ -10,12 +10,14 @@ public class AssetBundleConfiguration {
     private final List<Manipulator> preManipulators;
     private final List<Manipulator> postManipulators;
     private String contextRootPath;
+    private BuildStrategy buildStrategy;
 
     public AssetBundleConfiguration() {
         this.filePatterns = new ArrayList<FilePattern>();
         this.preManipulators = new ArrayList<Manipulator>();
         this.postManipulators = new ArrayList<Manipulator>();
         this.contextRootPath = AssetServlet.ASSET_ROOT_PATH;
+        this.buildStrategy = BuildStrategies.BUILD_ONCE;
     }
 
     public AssetBundleConfiguration(AssetBundleConfiguration baseConfiguration) {
@@ -25,6 +27,14 @@ public class AssetBundleConfiguration {
 
     public String getContextRootPath() {
         return contextRootPath;
+    }
+
+    public BuildStrategy getBuildStrategy() {
+        return buildStrategy;
+    }
+
+    public void setBuildStrategy(BuildStrategy buildStrategy) {
+        this.buildStrategy = buildStrategy;
     }
 
     public AssetBundleConfiguration setContextRootPath(String contextRootPath) {

@@ -1,16 +1,15 @@
 package org.jassetmanager.testservlets;
 
 import org.jassetmanager.BuildStrategies;
-import org.jassetmanager.testmanipulators.CounterManipulator;
+import org.jassetmanager.BuildStrategy;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
-public class CachingAssetServlet extends SimpleAssetConcatenationServlet {
+public class NonCachingAssetServlet extends CachingAssetServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        super.config.addPostManipulator(new CounterManipulator());
-        super.config.setBuildStrategy(BuildStrategies.BUILD_ONCE);
+        super.config.setBuildStrategy(BuildStrategies.ALWAYS_REBUILD);
     }
 }

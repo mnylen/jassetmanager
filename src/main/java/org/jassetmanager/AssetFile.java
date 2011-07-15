@@ -7,12 +7,10 @@ import java.net.URL;
 
 public class AssetFile {
     private final String path;
-    private final ServletContext context;
     private final URL url;
     
     public AssetFile(String path, ServletContext context) throws MalformedURLException {
         this.path = path;
-        this.context = context;
         this.url = context.getResource(this.path);
     }
 

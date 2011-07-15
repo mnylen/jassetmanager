@@ -52,10 +52,10 @@ public class AssetBundle {
         this.built = true;
     }
 
-    public long getLastModified(List<AssetFile> allFiles) throws IOException {
+    public long getLastModified(Assets assets) throws IOException {
         long max = 0;
 
-        for (AssetFile file : allFiles) {
+        for (AssetFile file : assets.listAssets()) {
             if (this.config.getContentPosition(file) != -1) {
                 long lastModified = file.getLastModified();
 

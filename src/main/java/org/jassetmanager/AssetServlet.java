@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AssetServlet extends HttpServlet {
     private final AssetRegistry registry;
@@ -16,19 +14,8 @@ public class AssetServlet extends HttpServlet {
     private static final String IF_MODIFIED_SINCE_HEADER = "If-Modified-Since";
     protected static final String ASSET_ROOT_PATH = "/";
 
-    private boolean cache;
-
     public AssetServlet() {
         this.registry = new AssetRegistry();
-        this.cache = true;
-    }
-
-    public void setCache(boolean cache) {
-        this.cache = cache;
-    }
-
-    public boolean isCacheEnabled() {
-        return cache;
     }
 
     @Override
@@ -59,20 +46,9 @@ public class AssetServlet extends HttpServlet {
     }
 
     protected void rebuildBundleIfNeeded(AssetBundle bundle) throws IOException {
-        if (cache && bundle.isBuilt()) {
-            return;
-        } else {
-            List<AssetFile> allAssetFiles = findAllAssetFilesInContext(
-                    bundle.getConfiguration().getContextRootPath());
-
-            if (!(bundle.isBuilt())) {
-                bundle.build(allAssetFiles);
-            } else {
-                long lastModifiedAt = bundle.getLastModified(allAssetFiles);
-                if (lastModifiedAt > bundle.getBuiltAt()) {
-                    bundle.build(allAssetFiles);
-                }
-            }
+        Assets assets = new Assets(this.getServletContext(), bundle.getConfiguration().getContextRootPath());
+        if (bundle.getConfiguration().getBuildStrategy().isRebuildNeeded(bundle, assets)) {
+            bundle.build(assets.listAssets());
         }
     }
     
@@ -85,17 +61,6 @@ public class AssetServlet extends HttpServlet {
         }
 
         return true;
-    }
-
-    protected List<AssetFile> findAllAssetFilesInContext(String rootPath) {
-        final List<AssetFile> allAssetAssetFiles = new ArrayList<AssetFile>();
-        AssetFileWalker.walkAssetFiles(this.getServletContext(), rootPath, new AssetFileVisitor() {
-            public void visitFile(@NotNull AssetFile assetFile) {
-                allAssetAssetFiles.add(assetFile);
-            }
-        });
-
-        return allAssetAssetFiles;
     }
 
     protected void configureBundle(String requestPath, String serveAsMimeType, UserAgentMatcher userAgentMatcher, AssetBundleConfiguration config) {

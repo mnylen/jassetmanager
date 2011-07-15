@@ -2,6 +2,7 @@ package org.jassetmanager;
 
 import org.jassetmanager.testmanipulators.CounterManipulator;
 import org.jassetmanager.testservlets.CachingAssetServlet;
+import org.jassetmanager.testservlets.NonCachingAssetServlet;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertThat;
@@ -17,7 +18,7 @@ public class AssetServletBuildStrategiesTest {
     }
 
     @Test
-    public void testCachesWhenCacheTurnedOn() throws Exception {
+    public void testCachesWhenBuildOnce() throws Exception {
         ServletTester tester = new ServletTester();
         tester.setClassLoader(CachingAssetServlet.class.getClassLoader());
         tester.setContextPath("/");
@@ -35,5 +36,26 @@ public class AssetServletBuildStrategiesTest {
                         "html, body { margin: 0; }\r\n" +
                         "body { background-color: #000; }\r\n"));
 
+    }
+
+    @Test
+    public void testDoesNotCacheWhenAlwaysRebuild() throws Exception {
+        ServletTester tester = new ServletTester();
+        tester.setClassLoader(NonCachingAssetServlet.class.getClassLoader());
+        tester.setContextPath("/");
+        tester.setResourceBase("src/test/resources");
+        tester.addServlet(NonCachingAssetServlet.class, "*.css");
+        tester.start();
+
+
+        RequestUtil.getResponse(tester, "/css/application.css");
+        HttpTester secondResponse = RequestUtil.getResponse(tester, "/css/application.css");
+
+        tester.stop();
+
+        assertThat(secondResponse.getContent(), equalTo(
+                        "/* Counter: 2 */\r\n" +
+                        "html, body { margin: 0; }\r\n" +
+                        "body { background-color: #000; }\r\n"));
     }
 }
