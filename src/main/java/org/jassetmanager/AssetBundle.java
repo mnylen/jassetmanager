@@ -25,6 +25,10 @@ public class AssetBundle {
         this.built = false;
     }
 
+    public AssetBundleConfiguration getConfiguration() {
+        return config;
+    }
+
     public boolean isBuilt() {
         return this.built;
     }

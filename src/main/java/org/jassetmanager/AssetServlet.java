@@ -14,7 +14,7 @@ public class AssetServlet extends HttpServlet {
     private final AssetRegistry registry;
     private static final String USER_AGENT_HEADER = "User-Agent";
     private static final String IF_MODIFIED_SINCE_HEADER = "If-Modified-Since";
-    private static final String ASSET_ROOT_PATH = "/";
+    protected static final String ASSET_ROOT_PATH = "/";
 
     private boolean cache;
 
@@ -62,11 +62,12 @@ public class AssetServlet extends HttpServlet {
         if (cache && bundle.isBuilt()) {
             return;
         } else {
-            if (!(bundle.isBuilt())) {
-                bundle.build(findAllAssetPaths());
-            } else {
-                List<AssetFile> allAssetFiles = findAllAssetPaths();
+            List<AssetFile> allAssetFiles = findAllAssetFilesInContext(
+                    bundle.getConfiguration().getContextRootPath());
 
+            if (!(bundle.isBuilt())) {
+                bundle.build(allAssetFiles);
+            } else {
                 long lastModifiedAt = bundle.getLastModified(allAssetFiles);
                 if (lastModifiedAt > bundle.getBuiltAt()) {
                     bundle.build(allAssetFiles);
@@ -86,9 +87,9 @@ public class AssetServlet extends HttpServlet {
         return true;
     }
 
-    protected List<AssetFile> findAllAssetPaths() {
+    protected List<AssetFile> findAllAssetFilesInContext(String rootPath) {
         final List<AssetFile> allAssetAssetFiles = new ArrayList<AssetFile>();
-        AssetFileWalker.walkAssetFiles(this.getServletContext(), ASSET_ROOT_PATH, new AssetFileVisitor() {
+        AssetFileWalker.walkAssetFiles(this.getServletContext(), rootPath, new AssetFileVisitor() {
             public void visitFile(@NotNull AssetFile assetFile) {
                 allAssetAssetFiles.add(assetFile);
             }

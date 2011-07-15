@@ -10,6 +10,11 @@ public class AssetFileWalker {
     public static void walkAssetFiles(@NotNull ServletContext context,
                                       @NotNull String rootPath,
                                       @NotNull AssetFileVisitor visitor) {
+
+        if (!isDirectory(rootPath)) {
+            rootPath = rootPath + "/";
+        }
+        
         @SuppressWarnings("unchecked")
         Set<String> assetPaths = context.getResourcePaths(rootPath);
         if (assetPaths == null) {

@@ -16,8 +16,9 @@ public class SimpleAssetConcatenationServlet extends AssetServlet {
         super.init(config);
 
         this.config = new AssetBundleConfiguration()
-                .addFilePattern(new RegexFilePattern("/reset.css"))
-                .addFilePattern(new RegexFilePattern("/main.css"));
+                .addFilePattern(new RegexFilePattern("/css/reset.css"))
+                .addFilePattern(new RegexFilePattern("/css/main.css"))
+                .setContextRootPath("/css");
 
         this.configureBundle("/css/application.css", "text/css", BrowserMatchers.ANY, this.config);
     }

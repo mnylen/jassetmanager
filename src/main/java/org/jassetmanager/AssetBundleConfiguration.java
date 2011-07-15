@@ -9,16 +9,27 @@ public class AssetBundleConfiguration {
     private final List<FilePattern> filePatterns;
     private final List<Manipulator> preManipulators;
     private final List<Manipulator> postManipulators;
+    private String contextRootPath;
 
     public AssetBundleConfiguration() {
         this.filePatterns = new ArrayList<FilePattern>();
         this.preManipulators = new ArrayList<Manipulator>();
         this.postManipulators = new ArrayList<Manipulator>();
+        this.contextRootPath = AssetServlet.ASSET_ROOT_PATH;
     }
 
     public AssetBundleConfiguration(AssetBundleConfiguration baseConfiguration) {
         this();
         includeConfiguration(baseConfiguration);
+    }
+
+    public String getContextRootPath() {
+        return contextRootPath;
+    }
+
+    public AssetBundleConfiguration setContextRootPath(String contextRootPath) {
+        this.contextRootPath = contextRootPath;
+        return this;
     }
 
     public AssetBundleConfiguration includeConfiguration(AssetBundleConfiguration configuration) {
