@@ -1,7 +1,7 @@
 package org.jassetmanager;
 
-import org.mortbay.jetty.testing.HttpTester;
-import org.mortbay.jetty.testing.ServletTester;
+import org.eclipse.jetty.testing.HttpTester;
+import org.eclipse.jetty.testing.ServletTester;
 
 import java.util.Map;
 
