@@ -2,8 +2,9 @@ package org.jassetmanager;
 
 import org.eclipse.jetty.testing.HttpTester;
 import org.eclipse.jetty.testing.ServletTester;
+import org.jassetmanager.testservlets.SimpleAssetConcatenationServlet;
 
-import java.util.Map;
+import javax.servlet.http.HttpServlet;
 
 public class RequestUtil {
     public static HttpTester getResponse(ServletTester tester, String uri) throws Exception {
@@ -25,5 +26,18 @@ public class RequestUtil {
         response.parse(tester.getResponses(request.generate()));
 
         return response;
+    }
+
+    public static ServletTester createAndStartServletTester(Class<? extends HttpServlet> servletClass, String urlPattern)
+        throws Exception {
+        
+        ServletTester tester = new ServletTester();
+        tester.setClassLoader(servletClass.getClassLoader());
+        tester.setContextPath("/");
+        tester.setResourceBase("src/test/resources");
+        tester.addServlet(servletClass, urlPattern);
+        tester.start();
+
+        return tester;
     }
 }

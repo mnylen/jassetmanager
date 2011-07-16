@@ -46,6 +46,7 @@ public class AssetServlet extends HttpServlet {
                 rebuildBundleIfNeeded(bundle, uri, userAgent);
             } catch (AssetException e) {
                 handleException(uri, userAgent, response, e);
+                return;
             }
 
             if (!(isBundleModified(bundle, request))) {
