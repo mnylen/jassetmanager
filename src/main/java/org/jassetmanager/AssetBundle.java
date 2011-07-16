@@ -130,7 +130,7 @@ public class AssetBundle {
         }
     }
 
-    private byte[] preManipulate(AssetFile assetFile, byte[] content) {
+    private byte[] preManipulate(AssetFile assetFile, byte[] content) throws AssetException {
         for (Manipulator manipulator : this.config.getPreManipulators()) {
             content = manipulator.manipulate(this, assetFile, content);
         }
@@ -138,7 +138,7 @@ public class AssetBundle {
         return content;
     }
 
-    private byte[] postManipulate(byte[] content) {
+    private byte[] postManipulate(byte[] content) throws AssetException {
         for (Manipulator manipulator : this.config.getPostManipulators()) {
             content = manipulator.manipulate(this, null, content);
         }
