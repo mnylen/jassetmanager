@@ -1,124 +1,178 @@
 # jAssetManager
 
-**NOTE: jAssetManager is a work in progress. This README might not reflect
-the reality very accurately. Everything is subject to change and nothing is
-thoroughly tested. You've been warned.**
+Manages your static assets in Java web applications like a boss:
 
-## What?
+* Concatenates your CSS and JavaScript files into one asset bundle
+  that can be served in a single request, reducing the HTTP overhead
+  coming from serving multiple assets separately.
 
-jAssetManager manages static assets in your Java web application, concatenating
-them and manipulating them, so serving static assets produce as little overhead
-as possible.
+* Allows manipulating the input files before concatenation, and
+  even after it. Good for compiling some higher level language into
+  JavaScript or CSS (think CoffeeScript, LESS, SASS, ...), and for compressing
+  the assets - the possibilities are limitless.
 
-The main principle is to eliminate multiple HTTP requests for single, smaller
-assets. For example, a typical web application has multiple CSS files:
-_reset.css_, _main.css_, _buttons.css_, and so on. Including them all in a
-single page results in three HTTP requests, which adds server overhead and
-makes the pages slower to load.
+* Serve different versions of your asset bundles for different
+  browsers. Wan't to include _ie.css_ for only Internet Explorer?
+  Can do!
 
+* Caches and rebuilds your bundles when needed. Highly configurable.
+
+* Zero XML configuration from the jAssetManager's part. All configuration
+  is done by providing a custom `AssetServlet`.
+
+* Except for the obvious Servlet API, no dependencies on the core! You can start
+using jAssetManager by just dropping the jar to your application.
 
 ## Usage
 
-With jAssetManager you configure _asset bundles_ that contain multiple
-asset files. The asset files are then concatenated together and served as
-a single asset to the browser:
-
-	public class MyAssetServlet extends AssetServlet {
-		@Override
-		public void init(ServletConfig config) throws ServletException {
-			super.init(config);
-			
-			super.configureBundle("/assets/css/application.css", "text/css", BrowserMatcher.ANY,
-				new AssetBundleConfiguration()
-					.addFilePattern("/static/css/reset.css"))
-					.addFilePattern("/static/css/main.css")); // matches all rest CSS files
-		}
-	}
-	
-In your _web.xml_ you might configure it as follows:
+First, drop the jar into your application. Then, add the following to your web.xml:
 
 	<servlet>
 		<servlet-name>assets</servlet-name>
 		<servlet-class>com.myproject.MyAssetServlet</servlet-class>
 	</servlet>
-	
+			
 	<servlet-mapping>
-		<servlet-name>assets</servlet-name>
+		<servlet-name>assets</servlet>
 		<url-pattern>/assets/*</url-pattern>
 	</servlet-mapping>
 	
-Now whenever a request is made to _/assets/css/application.css_, the asset
-servlet will match the request against the configured asset bundle and
-the _User-Agent_ of the request. The example above will produce a
-concatenation of _reset.css_ and _main.css_ files inside _/static/css_
-directory for all browsers. However, you can specify different bundles in the
-same path to be served for different browsers. One might, for example,
-include _ie.css_ for all versions of Internet Explorer as follows:
+Now just extend the `AssetServlet` and configure your bundles:
 
+	package com.myproject;
+	
 	public class MyAssetServlet extends AssetServlet {
+		
 		@Override
 		public void init(ServletConfig config) throws ServletException {
-			super.init(config);
-			
-			AssetBundleConfiguration baseConfiguration = new AssetBundleConfiguration()
-				.addFilePattern("/static/css/reset.css"))
-				.addFilePattern("/static/css/main.css");
-				
-			AssetBundleConfiguration ieConfiguration = new AssetBundleConfiguration(baseConfiguration)
-				.addFilePattern("/static/css/ie.css");
-			
-			super.configureBundle("/assets/css/application.css", "text/css", BrowserMatcher.MSIE,
-				ieConfiguration);
-			
-			super.configureBundle("/assets/css/application.css", "text/css", BrowserMatcher.ANY,
-				baseConfiguration);
+			super.configureBundle("/assets/application.css", "text/css", BrowserMatchers.ANY,
+				new AssetBundleConfiguration()
+					.addFilePattern("/static/css/reset.css") // these should be located
+					.addFilePattern("/static/css/main.css")  // inside your servlet context
+			);
 		}
 	}
 	
-The configured bundle that first matches the request URI and _User-Agent_
-header will be served. In the above case, if a browser identifying itself as
-Google Chrome would request the asset bundle, the normal version would
-be served. If Internet Explorer on the other hand would do the same
-request, it would be served the normal bundle plus the _ie.css_ file.
+Go on, try it out! When you do a request for _/assets/application.css_, you
+should see your _reset.css_ and _main.css_ bundled together. Now, edit one of
+the files and you should see the modified content.
 
-## Manipulators
+The first argument to the `configureBundle` method call tells the request
+URI that will be routed to the bundle. The second tells the mime type the
+bundle will be served as and the third one provides a matcher for the
+user agent. The fourth is the actual bundle configuration.
 
-A `Manipulator` is a tool that manipulates the asset or bundle content in some way.
-Manipulators can be configured either as _pre-manipulators_ or _post-manipulators_.
-The difference is, pre-manipulators are run for each individual asset file, while
-post-manipulators are run for the whole concatenated asset bundle.
+### File patterns
 
-Some example usage cases for pre-manipulators might include:
+File patterns are what matches your assets in the servlet's context to be
+included to a bundle. You can add as many of them as you like and the resulting
+concatenation preserves the order you added them in. On the
+background, each file pattern is compiled as a regular expression, so if you
+want to include, let's say, all the _.css_ files, you might do something like
+this:
 
-* Compiling assets from CoffeeScript to JavaScript (or from SASS/LESS to CSS).
-* Wrapping JavaScript code inside a safe wrapper.
-* Inserting the asset file name as comment.
+	new AssetBundleConfiguration()
+		// some other configuration
+		.addFilePattern("/static/css/.+\\.css");
+		
+If the bundled `RegexFilePattern` isn't enough, you can easily roll your own by implementing
+the `FilePattern` interface.
 
-...and for post-manipulators:
+By default the `AssetServlet` will try to match all assets inside your servlet's context to
+the bundle. If you have a lot of files, you can aid it a bit by providing _context root path_,
+the longest common subdirectory where all the assets for the bundle reside:
 
-* Minifying the asset bundle using YUI Compressor or such.
-* Replacing image references with base64.
-* Inserting copyright notice at the top of the bundle.
+	new AssetBundleConfiguration()
+		.setContextRootPath("/static/css")
+		.addFilePattern("/static/css/.+\\.css");
 
-To use, just simply add the manipulators you want while configuring the bundle:
+### Manipulators
 
-	public class MyAssetServlet extends AssetServlet {
-		@Override
-		public void init(ServletConfig config) throws ServletException {
-			super.init(config);
-			
-			configureBundle("/assets/css/application.css", "text/css", BrowserMatchers.ANY,
-				new AssetBundleConfiguration()
-					.addFilePattern("/static/css/reset.scss"))
-					.addFilePattern("/static/css/main.scss")
-					.addPreManipualtor(new CompileSASSManipulator())
-					.addPostManipulator(new MinifyCSSWithYUICompressorManipulator());
-				
+Manipulators to the rescue when you need to manipulate your assets in any way. They can twist,
+bend and even replace your assets on the fly. Manipulators come in two forms:
+
+* _pre manipulators_ manipulate each asset file
+
+* _post manipulators_ manipulate the whole bundle after it's been built
+  (i.e. the concatenation)
+
+Adding manipulators is easy: just use the `addPreManipulator(Manipulator)`
+and `addPostManipulator(Manipulator)` methods on the configuration.
+
+The core jAssetManager does not currently provide any manipulators for you to
+use, but implementing your custom `Manipulator` interface is pretty straightforward:
+
+	package com.myproject;
+	
+	import org.jassetmanager.*;
+	
+	public class AddCopyrightNoticeManipulator implements Manipulator {
+		public byte[] manipulate(AssetBundle bundle, AssetFile assetFile, byte[] content) {
+			return new StringBuilder()
+				.append("/*\r\n    Copyright (C) 2011 Fancy Organization All Rights Reserved\r\n*/\r\n")
+				.append(new String(content))
+				.toString()
+				.getBytes();
 		}
 	}
 
+This would append a copyright notice to the top of the bundle. To use:
+
+	new AssetBundleConfiguration()
+		.addPostManipulator(new AddCopyrightNoticeManipulator());
+
+Note that for post manipulators, the `assetFile` argument will always be 
+`null`, because you are manipulating the whole bundle. For pre manipulators
+the value will be the asset file currently being processed.
+
+### Not all browsers are equal
+
+Each bundle is configured to respond to a specific request URI and _User-Agent_ header.
+The first matching bundle will be served, so be sure to get the order right:
+
+	AssetBundleConfiguration baseConfiguration = new AssetBundleConfiguration()
+		.addFilePattern("/static/css/reset.css")
+		.addFilePattern("/static/css/main.css");
+		
+	AssetBundleConfiguration ieConfiguration = new AssetBundleConfiguration(baseConfiguration)
+		.addFilePattern("/static/css/ie.css");
+		
+	super.configureBundle("/assets/application.css", "text/css", BrowserMatchers.MSIE, ieConfiguration);
+	super.configureBundle("/assets/application.css", "text/css", BrowserMatchers.ANY, baseConfiguration);
+
+The above would serve a bundle with _ie.css_ appended to the bottom of the
+bundle for Internet Explorer, and the bundle without the IE specific stuff
+for the rest of the internet.
+
+To roll your own matcher, implement the `UserAgentMatcher` interface and give
+it as argument for `configureBundle`.
+
+### It's build time!
+
+You can control the if and when your bundles will be rebuilt. The default is to
+rebuild the bundle after any modifications have been done to it's asset
+files. Other strategies include _build once_ and _always rebuild_:
+
+* `BuildStragies.REBUILD_IF_MODIFIED` - builds the bundle once and after each
+  modification to it's asset files (useful in development)
+
+* `BuildStrategies.BUILD_ONCE` - builds the bundle once and never again, unless
+  the application server is restarted (useful in production)
+
+* `BuildStrategies.ALWAYS_REBUILD` - rebuilds the bundle on each request
+  (useful when developing manipulators)
+
+To set the strategy, use `setBuildStrategy(BuildStrategy)` on the
+configuration.
+
+If you aren't happy with the defaults strategies, you can roll your own by
+implementing the `BuildStragy` interface.
+
+## Feature requests and bug reports
+
+Please report any feature requests and bug reports to the
+[GitHub issue tracker](http://github.com/mnylen/jassetmanager/issues)
+
 ## License
 
-Copyright (&copy;) 2011 Mikko Nylén
-
-See LICENSE
+Licensed under the MIT license. See the LICENSE file for more information.
