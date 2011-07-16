@@ -52,7 +52,7 @@ public class AssetFileWalkerTest {
     }
 
     @Test
-    public void testDoesNotTryToWalkNullPaths() {
+    public void testDoesNotTryToWalkNullPaths() throws AssetException {
         when(this.context.getResourcePaths("/img/")).thenReturn(null);
         AssetFileWalker.walkAssetFiles(this.context, "/img/", new AssetFileVisitor() {
             public void visitFile(@NotNull AssetFile assetFile) {

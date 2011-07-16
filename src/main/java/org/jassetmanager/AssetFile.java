@@ -9,17 +9,27 @@ public class AssetFile {
     private final String path;
     private final URL url;
     
-    public AssetFile(String path, ServletContext context) throws MalformedURLException {
+    public AssetFile(String path, ServletContext context) throws AssetException {
         this.path = path;
-        this.url = context.getResource(this.path);
+
+        try {
+            this.url = context.getResource(this.path);
+        } catch (MalformedURLException e) {
+            throw new AssetException(
+                    "Could not get URL for asset '" + path + "', because the asset path not a valid URL.", e);
+        }
     }
 
     public String getPath() {
         return path;
     }
 
-    public long getLastModified() throws IOException {
-        return this.url.openConnection().getLastModified();
+    public long getLastModified() throws AssetException {
+        try {
+            return this.url.openConnection().getLastModified();
+        } catch (IOException e) {
+            throw new AssetException("Could not get last modified time for '" + this.path + "'", e);
+        }
     }
 
     @Override

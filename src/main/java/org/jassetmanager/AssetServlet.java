@@ -13,9 +13,15 @@ public class AssetServlet extends HttpServlet {
     private static final String USER_AGENT_HEADER = "User-Agent";
     private static final String IF_MODIFIED_SINCE_HEADER = "If-Modified-Since";
     protected static final String ASSET_ROOT_PATH = "/";
+    private boolean debug;
 
     public AssetServlet() {
         this.registry = new AssetRegistry();
+        this.debug = false;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 
     @Override
@@ -32,7 +38,11 @@ public class AssetServlet extends HttpServlet {
             return;
         } else {
             AssetBundle bundle = registryEntry.getBundle();
-            rebuildBundleIfNeeded(bundle);
+            try {
+                rebuildBundleIfNeeded(bundle);
+            } catch (AssetException e) {
+                handleException(request, response, e);
+            }
 
             if (!(isBundleModified(bundle, request))) {
                 response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
@@ -45,16 +55,26 @@ public class AssetServlet extends HttpServlet {
         }
     }
 
-    protected void rebuildBundleIfNeeded(AssetBundle bundle) throws IOException {
+    protected void handleException(HttpServletRequest request,
+                                   HttpServletResponse response,
+                                   AssetException e) throws IOException {
+
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+        if (this.debug) {
+            response.setContentType("text/plain");
+            e.printStackTrace(response.getWriter());
+        }
+    }
+
+    protected void rebuildBundleIfNeeded(AssetBundle bundle) throws AssetException {
         Assets assets = new Assets(this.getServletContext(), bundle.getConfiguration().getContextRootPath());
         if (bundle.getConfiguration().getBuildStrategy().isRebuildNeeded(bundle, assets)) {
             bundle.build(assets.listAssets());
         }
     }
     
-    protected boolean isBundleModified(AssetBundle bundle, HttpServletRequest request)
-        throws IOException {
-
+    protected boolean isBundleModified(AssetBundle bundle, HttpServletRequest request) {
         long ifModifiedSince = request.getDateHeader(IF_MODIFIED_SINCE_HEADER);
         if (ifModifiedSince > 0) {
             return bundle.getBuiltAt() > ifModifiedSince;

@@ -40,7 +40,7 @@ public class AssetBundleSimpleConcatenationTest {
     }
     
     @Test
-    public void testBuildsConcatenation() throws IOException {
+    public void testBuildsConcatenation() throws AssetException {
         assertThat(this.bundle.isBuilt(), is(false));
         assertThat(this.bundle.getContent(), equalTo(new byte[0]));
         

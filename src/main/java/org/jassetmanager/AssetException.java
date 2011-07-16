@@ -1,6 +1,6 @@
 package org.jassetmanager;
 
-public class AssetException extends RuntimeException {
+public class AssetException extends Exception {
     public AssetException(String message) {
         super(message);
     }

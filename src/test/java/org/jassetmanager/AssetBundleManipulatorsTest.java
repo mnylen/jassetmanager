@@ -44,7 +44,7 @@ public class AssetBundleManipulatorsTest {
     }
 
     @Test
-    public void testRunsPreManipulatorsForEachFileAndPostManipulatorForConcatenation() throws IOException {
+    public void testRunsPreManipulatorsForEachFileAndPostManipulatorForConcatenation() throws AssetException {
         this.bundle.build(this.allAssetFiles);
 
         assertThat(new String(this.bundle.getContent()), equalTo(

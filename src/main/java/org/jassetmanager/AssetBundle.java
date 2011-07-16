@@ -41,7 +41,7 @@ public class AssetBundle {
         return builtAt;
     }
 
-    public void build(@NotNull List<AssetFile> allAssetFiles) throws IOException {
+    public void build(@NotNull List<AssetFile> allAssetFiles) throws AssetException {
         this.content = new byte[0];
         this.built = false;
 
@@ -52,13 +52,12 @@ public class AssetBundle {
         this.built = true;
     }
 
-    public long getLastModified(Assets assets) throws IOException {
+    public long getLastModified(Assets assets) throws AssetException {
         long max = 0;
 
         for (AssetFile file : assets.listAssets()) {
             if (this.config.getContentPosition(file) != -1) {
                 long lastModified = file.getLastModified();
-
                 if (lastModified > max) {
                     max = lastModified;
                 }
@@ -68,7 +67,7 @@ public class AssetBundle {
         return max;
     }
 
-    private void readAndAppendFilesFromContentMap(Map<Integer, List<AssetFile>> contentMap) throws IOException {
+    private void readAndAppendFilesFromContentMap(Map<Integer, List<AssetFile>> contentMap) throws AssetException {
         List<Integer> keys = new ArrayList<Integer>(contentMap.keySet());
         Collections.sort(keys);
 
@@ -82,7 +81,7 @@ public class AssetBundle {
         this.content = postManipulate(to.toByteArray());
     }
 
-    private void readAndAppendFiles(List<AssetFile> assetFiles, ByteArrayOutputStream to) throws IOException {
+    private void readAndAppendFiles(List<AssetFile> assetFiles, ByteArrayOutputStream to) throws AssetException {
         for (AssetFile assetFile : assetFiles) {
             readAndAppendFile(assetFile, to);
         }
@@ -107,17 +106,19 @@ public class AssetBundle {
         return contentMap;
     }
 
-    private void readAndAppendFile(AssetFile assetFile, ByteArrayOutputStream to) throws IOException {
+    private void readAndAppendFile(AssetFile assetFile, ByteArrayOutputStream to) throws AssetException {
         InputStream is = null;
 
         try {
             is = this.context.getResourceAsStream(assetFile.getPath());
             if (is == null) {
-                throw new IOException("Could not open stream to asset '" + assetFile + "'");
+                throw new AssetException("Could not open stream to asset '" + assetFile + "'");
             }
 
             to.write(preManipulate(assetFile, ResourceUtil.readInputStream(is)));
             to.write(ASSET_SEPARATOR);
+        } catch(IOException e) {
+            throw new AssetException("Could not read and append asset '" + assetFile + "'", e);
         } finally {
             try {
                 if (is != null) {

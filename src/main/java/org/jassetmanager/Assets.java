@@ -16,7 +16,7 @@ public class Assets {
         this.contextRoot = contextRoot;
     }
 
-    public List<AssetFile> listAssets() {
+    public List<AssetFile> listAssets() throws AssetException {
         if (this.assetFiles != null) {
             return this.assetFiles;
         } else {

@@ -9,7 +9,9 @@ import java.util.Set;
 public class AssetFileWalker {
     public static void walkAssetFiles(@NotNull ServletContext context,
                                       @NotNull String rootPath,
-                                      @NotNull AssetFileVisitor visitor) {
+                                      @NotNull AssetFileVisitor visitor)
+
+        throws AssetException {
 
         if (!isDirectory(rootPath)) {
             rootPath = rootPath + "/";
@@ -25,11 +27,7 @@ public class AssetFileWalker {
             if (isDirectory(assetPath)) {
                 walkAssetFiles(context, assetPath, visitor);
             } else {
-                try {
-                    visitor.visitFile(new AssetFile(assetPath, context));
-                } catch (MalformedURLException e) {
-                    
-                }
+                visitor.visitFile(new AssetFile(assetPath, context));
             }
         }
     }
