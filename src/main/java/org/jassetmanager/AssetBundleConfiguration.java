@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AssetBundleConfiguration {
+    private final static BuildStrategy DEFAULT_BUILD_STRATEGY = BuildStrategies.REBUILD_IF_MODIFIED;
     private final List<FilePattern> filePatterns;
     private final List<Manipulator> preManipulators;
     private final List<Manipulator> postManipulators;
@@ -17,7 +18,7 @@ public class AssetBundleConfiguration {
         this.preManipulators = new ArrayList<Manipulator>();
         this.postManipulators = new ArrayList<Manipulator>();
         this.contextRootPath = AssetServlet.ASSET_ROOT_PATH;
-        this.buildStrategy = BuildStrategies.BUILD_ONCE;
+        this.buildStrategy = BuildStrategies.REBUILD_IF_MODIFIED;
     }
 
     public AssetBundleConfiguration(AssetBundleConfiguration baseConfiguration) {
@@ -55,7 +56,7 @@ public class AssetBundleConfiguration {
             this.addPostManipulator(postManipulator);
         }
 
-        if (this.buildStrategy == BuildStrategies.BUILD_ONCE) {
+        if (this.buildStrategy == DEFAULT_BUILD_STRATEGY) {
             this.buildStrategy = configuration.getBuildStrategy();
         }
 
