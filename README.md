@@ -20,8 +20,9 @@ Manages your static assets in Java web applications like a boss:
 * Zero XML configuration from the jAssetManager's part. All configuration
   is done by providing a custom `AssetServlet`.
 
-* Except for the obvious Servlet API, no dependencies on the core! You can start
-using jAssetManager by just dropping the jar to your application.
+* Except for the obvious Servlet API and commons-logging, no dependencies on
+  the core! You can start using jAssetManager by just dropping the jar to your
+  application.
 
 ## Usage
 
@@ -167,6 +168,14 @@ configuration.
 
 If you aren't happy with the defaults strategies, you can roll your own by
 implementing the `BuildStragy` interface.
+
+### Debugging
+
+Sometimes, somewhere, something goes wrong. To turn on debugging mode, use
+`setDebug(true)` on the `AssetServlet`. This will cause any errors to
+be printed to the servlet's response. The default is `false`, and is
+suitable for production environment. Don't worry though, errors are
+logged even when the debug mode is turned off.
 
 ## Feature requests and bug reports
 
