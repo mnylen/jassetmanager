@@ -100,8 +100,8 @@ bend and even replace your assets on the fly. Manipulators come in two forms:
 Adding manipulators is easy: just use the `addPreManipulator(Manipulator)`
 and `addPostManipulator(Manipulator)` methods on the configuration.
 
-The core jAssetManager does not currently provide any manipulators for you to
-use, but implementing your custom `Manipulator` interface is pretty straightforward:
+See the section below for manipulators that come with the jAssetManager. To create
+your own manipulator, just implement the `Manipulator` interface.
 
 	package com.myproject;
 	
@@ -176,6 +176,31 @@ Sometimes, somewhere, something goes wrong. To turn on debugging mode, use
 be printed to the servlet's response. The default is `false`, and is
 suitable for production environment. Don't worry though, errors are
 logged even when the debug mode is turned off.
+
+## Built-in manipulators
+
+### SassCompileManipulator
+
+Compiles SASS and SCSS stylesheets as CSS.
+
+#### Dependencies:
+
+* `sass` executable must be installed (see [SASS home page](http://www.sass-lang.com))
+
+#### Usage
+
+Add as a pre manipulator:
+
+	new AssetBundleConfiguration()
+		.addPreManipulator(new SassCompileManipulator(
+			"sass", 								  // sass binary location, defaults to 'sass'
+			SassCompileManipulator.LanguageMode.SCSS, // language mode, defaults to 'SCSS', use 'SASS' for old-style SASS 
+			SassCompileManipulator.OutputStyle.NESTED // output style, defaults to 'NESTED', you can also use: COMPACT, COMPRESSED, EXPANDED
+		));
+
+#### Notes
+
+* Imports are not supported.
 
 ## Feature requests and bug reports
 

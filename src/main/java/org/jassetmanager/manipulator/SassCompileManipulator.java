@@ -104,6 +104,7 @@ public class SassCompileManipulator implements Manipulator {
         ArrayList<String> args = new ArrayList<String>();
         args.add(DEFAULT_SASS_EXECUTABLE);
         args.add("--stdin");
+        args.add("--unix-newlines");
         args.add("--style");
         args.add(this.style.toString().toLowerCase());
 
