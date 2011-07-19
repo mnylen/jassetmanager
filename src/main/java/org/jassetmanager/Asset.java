@@ -5,7 +5,9 @@ import java.io.IOException;
 public class Asset {
     private final String contextPath;
     private final FileSystem fs;
-
+    private byte[] content;
+    private boolean manipulated;
+    
     public Asset(FileSystem fs, String contextPath) {
         this.fs = fs;
         this.contextPath = contextPath;
@@ -20,6 +22,19 @@ public class Asset {
     }
 
     public byte[] getContent() throws IOException {
-        return fs.getContent(this);
+        if (this.content == null) {
+            this.content = fs.getContent(this);
+        }
+
+        return this.content;
+    }
+
+    public void setManipulatedContent(byte[] content) {
+        this.content = content;
+        this.manipulated = true;
+    }
+
+    public boolean isManipulated() {
+        return this.manipulated;
     }
 }
