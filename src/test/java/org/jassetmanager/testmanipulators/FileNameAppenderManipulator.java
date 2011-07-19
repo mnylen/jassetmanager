@@ -1,8 +1,6 @@
 package org.jassetmanager.testmanipulators;
 
-import org.jassetmanager.AssetBundle;
-import org.jassetmanager.AssetFile;
-import org.jassetmanager.Manipulator;
+import org.jassetmanager.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,5 +22,20 @@ public class FileNameAppenderManipulator implements Manipulator {
         }
 
         return content;
+    }
+
+    public void preManipulate(Asset asset, boolean isLast) throws AssetException, IOException {
+        byte[] manipulatedContent = new StringBuilder("/* ")
+                .append(asset.getContextPath())
+                .append(" */\r\n")
+                .append(new String(asset.getContent()))
+                .toString()
+                .getBytes();
+        
+        asset.setManipulatedContent(manipulatedContent);
+    }
+
+    public void postManipulate(Bundle bundle) throws AssetException, IOException {
+        
     }
 }
