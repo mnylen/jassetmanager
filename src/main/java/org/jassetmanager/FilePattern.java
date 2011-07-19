@@ -6,4 +6,5 @@ public interface FilePattern {
 
     public boolean matches(@NotNull AssetFile assetFile);
 
+    public boolean matches(Asset asset);
 }

@@ -16,4 +16,8 @@ public class RegexFilePattern implements FilePattern {
     public boolean matches(AssetFile assetFile) {
         return this.regexPattern.matcher(assetFile.getPath()).matches();
     }
+
+    public boolean matches(Asset asset) {
+        return this.regexPattern.matcher(asset.getContextPath()).matches();
+    }
 }
