@@ -132,4 +132,12 @@ public class SassCompileManipulator implements Manipulator {
                     "is executable.", e);
         }
     }
+
+    public void preManipulate(Asset asset, boolean isLast) throws AssetException, IOException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void postManipulate(Bundle bundle) throws AssetException, IOException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
