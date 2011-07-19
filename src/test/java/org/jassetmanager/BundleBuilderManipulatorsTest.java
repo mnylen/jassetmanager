@@ -13,40 +13,47 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class AssetBundleManipulatorsTest {
+public class BundleBuilderManipulatorsTest {
     private List<AssetFile> allAssetFiles;
-    private AssetBundle bundle;
+    private Bundle bundle;
 
     @Before
     public void setUp() throws Exception {
-        ServletContext mockContext = mock(ServletContext.class);
-        when(mockContext.getResourceAsStream("/css/reset.css")).thenReturn(
-                new ByteArrayInputStream("html, body { margin: 0; }".getBytes()));
+        FileSystem mockFs = mock(FileSystem.class);
+        Asset resetCss = new Asset(mockFs, "/css/reset.css");
+        Asset mainCss = new Asset(mockFs, "/css/main.css");
+        
+        when(mockFs.getAssets("/")).thenReturn(
+                new HashSet<Asset>(Arrays.asList(
+                        resetCss,
+                        mainCss)));
 
-        when(mockContext.getResourceAsStream("/css/main.css")).thenReturn(
-                new ByteArrayInputStream("body { background-color: #000; }".getBytes()));
+        when(mockFs.getContent(resetCss)).thenReturn(
+                "html, body { margin: 0; }".getBytes());
 
-        this.allAssetFiles = new ArrayList<AssetFile>(Arrays.asList(
-                new AssetFile("/css/main.css", mockContext), new AssetFile("/css/reset.css", mockContext)));
-
+        when(mockFs.getContent(mainCss)).thenReturn(
+                "body { background-color: #000; }".getBytes());
+        
         AssetBundleConfiguration config = new AssetBundleConfiguration()
                 .addFilePattern(new RegexFilePattern("/css/reset.css"))
                 .addFilePattern(new RegexFilePattern("/css/main.css"))
                 .addPreManipulator(new FileNameAppenderManipulator())
                 .addPostManipulator(new AddCopyrightNoticeManipulator());
 
-        this.bundle = new AssetBundle(config, mockContext);
+        this.bundle = new Bundle();
+
+        BundleBuilder builder = new BundleBuilder(config, mockFs);
+        builder.build(this.bundle);
     }
 
     @Test
     public void testRunsPreManipulatorsForEachFileAndPostManipulatorForConcatenation() throws AssetException {
-        this.bundle.build(this.allAssetFiles);
-
         assertThat(new String(this.bundle.getContent()), equalTo(
                 "/**\r\n" +
                 " * Copyright (c) 2011 Some Organization All Rights Reserved\r\n" +
