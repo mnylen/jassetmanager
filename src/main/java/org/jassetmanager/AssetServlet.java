@@ -42,10 +42,11 @@ public class AssetServlet extends HttpServlet {
             return;
         } else {
             Bundle bundle = registryEntry.getBundle();
-            BundleBuilder builder = registryEntry.getBuilder();
-            
+
             try {
-                builder.build(bundle);
+                if (!(registryEntry.isPrebuilt())) {
+                    registryEntry.getBuilder().build(bundle);
+                }
             } catch (AssetException e) {
                 handleException(uri, userAgent, response, e);
                 return;
@@ -99,5 +100,18 @@ public class AssetServlet extends HttpServlet {
                 userAgentMatcher,
                 new Bundle(),
                 new BundleBuilder(config, new ServletContextFileSystem(this.getServletContext())));
+    }
+
+    protected void configureBundle(String requestPath,
+                                   String serveAsMimeType,
+                                   UserAgentMatcher userAgentMatcher,
+                                   PrebuiltBundle bundle) {
+
+        this.registry.register(
+                requestPath,
+                serveAsMimeType,
+                userAgentMatcher,
+                bundle,
+                null);
     }
 }

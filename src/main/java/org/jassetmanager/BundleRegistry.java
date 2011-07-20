@@ -12,7 +12,8 @@ public class BundleRegistry {
     public void register(String path,
                          String serveAsMimeType,
                          UserAgentMatcher userAgentMatcher,
-                         Bundle bundle, BundleBuilder builder) {
+                         Bundle bundle,
+                         BundleBuilder builder) {
         
         if (!(this.registryEntryMap.containsKey(path))) {
             this.registryEntryMap.put(path, new ArrayList<RegistryEntry>());
@@ -51,6 +52,10 @@ public class BundleRegistry {
             this.userAgentMatcher = userAgentMatcher;
             this.bundle = bundle;
             this.builder = builder;
+        }
+
+        public boolean isPrebuilt() {
+            return (this.bundle instanceof PrebuiltBundle);
         }
 
         public BundleBuilder getBuilder() {

@@ -48,4 +48,11 @@ public class AssetServletTest {
         assertThat(response.getContent(),
                 equalTo("html, body { margin: 0; }\r\nbody { background-color: #000; }\r\n"));
     }
+
+    @Test
+    public void testServesPrebuiltBundles() throws Exception {
+        HttpTester response = RequestUtil.getResponse(tester, "/css/prebuilt.css");
+        assertThat(response.getContent(),
+                equalTo("body { color: pink; }"));
+    }
 }
