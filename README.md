@@ -107,12 +107,16 @@ To create your own manipulator, just implement the `Manipulator` interface.
 	import org.jassetmanager.*;
 	
 	public class AddCopyrightNoticeManipulator implements Manipulator {
-		public byte[] postManipulate(Bundle bundle) {
-			bundle.setManipulatedContent(new StringBuilder()
-				.append("/*\r\n    Copyright (C) 2011 Fancy Organization All Rights Reserved\r\n*/\r\n")
-				.append(new String(bundle.getContent()))
-				.toString()
-				.getBytes());
+		public void postManipulate(Bundle bundle) {
+			  bundle.setManipulatedContent(new StringBuilder()
+				  .append("/*\r\n    Copyright (C) 2011 Fancy Organization All Rights Reserved\r\n*/\r\n")
+				  .append(new String(bundle.getContent()))
+				  .toString()
+				  .getBytes());
+		}
+		
+		public void preManipulate(Asset asset, boolean isLast) {
+		    // Do nothing
 		}
 	}
 
