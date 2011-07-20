@@ -47,7 +47,7 @@ Now just extend the `AssetServlet` and configure your bundles:
 		@Override
 		public void init(ServletConfig config) throws ServletException {
 			super.configureBundle("/assets/application.css", "text/css", BrowserMatchers.ANY,
-				new AssetBundleConfiguration()
+				new BundleConfiguraton()
 					.addFilePattern("/static/css/reset.css") // these should be located
 					.addFilePattern("/static/css/main.css")  // inside your servlet context
 			);
@@ -72,7 +72,7 @@ background, each file pattern is compiled as a regular expression, so if you
 want to include, let's say, all the _.css_ files, you might do something like
 this:
 
-	new AssetBundleConfiguration()
+	new BundleConfiguration()
 		// some other configuration
 		.addFilePattern("/static/css/.+\\.css");
 		
@@ -83,7 +83,7 @@ By default the `AssetServlet` will try to match all assets inside your servlet's
 the bundle. If you have a lot of files, you can aid it a bit by providing _context root path_,
 the longest common subdirectory where all the assets for the bundle reside:
 
-	new AssetBundleConfiguration()
+	new BundleConfiguration()
 		.setContextRootPath("/static/css")
 		.addFilePattern("/static/css/.+\\.css");
 
@@ -100,42 +100,38 @@ bend and even replace your assets on the fly. Manipulators come in two forms:
 Adding manipulators is easy: just use the `addPreManipulator(Manipulator)`
 and `addPostManipulator(Manipulator)` methods on the configuration.
 
-See the section below for manipulators that come with the jAssetManager. To create
-your own manipulator, just implement the `Manipulator` interface.
+To create your own manipulator, just implement the `Manipulator` interface.
 
 	package com.myproject;
 	
 	import org.jassetmanager.*;
 	
 	public class AddCopyrightNoticeManipulator implements Manipulator {
-		public byte[] manipulate(AssetBundle bundle, AssetFile assetFile, byte[] content) {
-			return new StringBuilder()
+		public byte[] postManipulate(Bundle bundle) {
+			bundle.setManipulatedContent(new StringBuilder()
 				.append("/*\r\n    Copyright (C) 2011 Fancy Organization All Rights Reserved\r\n*/\r\n")
-				.append(new String(content))
+				.append(new String(bundle.getContent()))
 				.toString()
-				.getBytes();
+				.getBytes());
 		}
 	}
 
 This would append a copyright notice to the top of the bundle. To use:
 
-	new AssetBundleConfiguration()
+	new BundleConfiguration()
 		.addPostManipulator(new AddCopyrightNoticeManipulator());
 
-Note that for post manipulators, the `assetFile` argument will always be 
-`null`, because you are manipulating the whole bundle. For pre manipulators
-the value will be the asset file currently being processed.
 
 ### Not all browsers are equal
 
 Each bundle is configured to respond to a specific request URI and _User-Agent_ header.
 The first matching bundle will be served, so be sure to get the order right:
 
-	AssetBundleConfiguration baseConfiguration = new AssetBundleConfiguration()
+	BundleConfiguration baseConfiguration = new BundleConfiguration()
 		.addFilePattern("/static/css/reset.css")
 		.addFilePattern("/static/css/main.css");
 		
-	AssetBundleConfiguration ieConfiguration = new AssetBundleConfiguration(baseConfiguration)
+	BundleConfiguration ieConfiguration = new BundleConfiguration(baseConfiguration)
 		.addFilePattern("/static/css/ie.css");
 		
 	super.configureBundle("/assets/application.css", "text/css", BrowserMatchers.MSIE, ieConfiguration);
@@ -167,7 +163,7 @@ To set the strategy, use `setBuildStrategy(BuildStrategy)` on the
 configuration.
 
 If you aren't happy with the defaults strategies, you can roll your own by
-implementing the `BuildStragy` interface.
+implementing the `BuildStrategy` interface.
 
 ### Debugging
 
@@ -176,31 +172,6 @@ Sometimes, somewhere, something goes wrong. To turn on debugging mode, use
 be printed to the servlet's response. The default is `false`, and is
 suitable for production environment. Don't worry though, errors are
 logged even when the debug mode is turned off.
-
-## Built-in manipulators
-
-### SassCompileManipulator
-
-Compiles SASS and SCSS stylesheets as CSS.
-
-#### Dependencies:
-
-* `sass` executable must be installed (see [SASS home page](http://www.sass-lang.com))
-
-#### Usage
-
-Add as a pre manipulator:
-
-	new AssetBundleConfiguration()
-		.addPreManipulator(new SassCompileManipulator(
-			"sass", 								  // sass binary location, defaults to 'sass'
-			SassCompileManipulator.LanguageMode.SCSS, // language mode, defaults to 'SCSS', use 'SASS' for old-style SASS 
-			SassCompileManipulator.OutputStyle.NESTED // output style, defaults to 'NESTED', you can also use: COMPACT, COMPRESSED, EXPANDED
-		));
-
-#### Notes
-
-* Imports are not supported.
 
 ## Feature requests and bug reports
 

@@ -2,7 +2,6 @@ package org.jassetmanager;
 
 import org.eclipse.jetty.testing.HttpTester;
 import org.eclipse.jetty.testing.ServletTester;
-import org.jassetmanager.testservlets.SimpleAssetConcatenationServlet;
 
 import javax.servlet.http.HttpServlet;
 

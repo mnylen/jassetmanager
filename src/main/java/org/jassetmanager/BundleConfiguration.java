@@ -1,11 +1,9 @@
 package org.jassetmanager;
 
-import com.sun.istack.internal.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class AssetBundleConfiguration {
+public class BundleConfiguration {
     private final static BuildStrategy DEFAULT_BUILD_STRATEGY = BuildStrategies.REBUILD_IF_MODIFIED;
     private final List<FilePattern> filePatterns;
     private final List<Manipulator> preManipulators;
@@ -13,7 +11,7 @@ public class AssetBundleConfiguration {
     private String contextRootPath;
     private BuildStrategy buildStrategy;
 
-    public AssetBundleConfiguration() {
+    public BundleConfiguration() {
         this.filePatterns = new ArrayList<FilePattern>();
         this.preManipulators = new ArrayList<Manipulator>();
         this.postManipulators = new ArrayList<Manipulator>();
@@ -21,7 +19,7 @@ public class AssetBundleConfiguration {
         this.buildStrategy = BuildStrategies.REBUILD_IF_MODIFIED;
     }
 
-    public AssetBundleConfiguration(AssetBundleConfiguration baseConfiguration) {
+    public BundleConfiguration(BundleConfiguration baseConfiguration) {
         this();
         includeConfiguration(baseConfiguration);
     }
@@ -38,12 +36,12 @@ public class AssetBundleConfiguration {
         this.buildStrategy = buildStrategy;
     }
 
-    public AssetBundleConfiguration setContextRootPath(String contextRootPath) {
+    public BundleConfiguration setContextRootPath(String contextRootPath) {
         this.contextRootPath = contextRootPath;
         return this;
     }
 
-    public AssetBundleConfiguration includeConfiguration(AssetBundleConfiguration configuration) {
+    public BundleConfiguration includeConfiguration(BundleConfiguration configuration) {
         for (FilePattern pattern : configuration.getFilePatterns()) {
             this.addFilePattern(pattern);
         }
@@ -60,7 +58,7 @@ public class AssetBundleConfiguration {
             this.buildStrategy = configuration.getBuildStrategy();
         }
 
-        if (this.contextRootPath == AssetServlet.ASSET_ROOT_PATH) {
+        if (this.contextRootPath.equals(AssetServlet.ASSET_ROOT_PATH)) {
             this.contextRootPath = configuration.getContextRootPath();
         }
         
@@ -71,7 +69,7 @@ public class AssetBundleConfiguration {
         return filePatterns;
     }
 
-    public AssetBundleConfiguration addFilePattern(FilePattern pattern) {
+    public BundleConfiguration addFilePattern(FilePattern pattern) {
         if (pattern == null) {
             throw new IllegalArgumentException("pattern must not be null");
         }
@@ -80,7 +78,7 @@ public class AssetBundleConfiguration {
         return this;
     }
 
-    public AssetBundleConfiguration addFilePattern(String pattern) {
+    public BundleConfiguration addFilePattern(String pattern) {
         if (pattern == null) {
             throw new IllegalArgumentException("pattern must not be null");
         }
@@ -89,25 +87,11 @@ public class AssetBundleConfiguration {
         return this;
     }
 
-    public int getContentPosition(@NotNull AssetFile assetFile) {
-        int i = 0;
-
-        for (FilePattern pattern : this.filePatterns) {
-            if (pattern.matches(assetFile)) {
-                return i;
-            }
-
-            i++;
-        }
-
-        return -1;
-    }
-
     public List<Manipulator> getPreManipulators() {
         return preManipulators;
     }
 
-    public AssetBundleConfiguration addPreManipulator(Manipulator manipulator) {
+    public BundleConfiguration addPreManipulator(Manipulator manipulator) {
         this.preManipulators.add(manipulator);
         return this;
     }
@@ -116,7 +100,7 @@ public class AssetBundleConfiguration {
         return postManipulators;
     }
 
-    public AssetBundleConfiguration addPostManipulator(Manipulator manipulator) {
+    public BundleConfiguration addPostManipulator(Manipulator manipulator) {
         this.postManipulators.add(manipulator);
         return this;
     }

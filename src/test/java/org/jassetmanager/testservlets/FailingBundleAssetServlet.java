@@ -1,12 +1,10 @@
 package org.jassetmanager.testservlets;
 
-import org.jassetmanager.AssetBundle;
-import org.jassetmanager.AssetException;
-import org.jassetmanager.AssetFile;
-import org.jassetmanager.Manipulator;
+import org.jassetmanager.*;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import java.io.IOException;
 
 public class FailingBundleAssetServlet extends SimpleAssetConcatenationServlet {
 
@@ -15,7 +13,11 @@ public class FailingBundleAssetServlet extends SimpleAssetConcatenationServlet {
         super.init(config);
 
         super.config.addPostManipulator(new Manipulator() {
-            public byte[] manipulate(AssetBundle bundle, AssetFile assetFile, byte[] content) throws AssetException {
+            public void preManipulate(Asset asset, boolean isLast) throws AssetException, IOException {
+                
+            }
+
+            public void postManipulate(Bundle bundle) throws AssetException, IOException {
                 throw new AssetException("I, Fail");
             }
         });

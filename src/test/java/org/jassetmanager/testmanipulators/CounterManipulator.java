@@ -1,8 +1,8 @@
 package org.jassetmanager.testmanipulators;
 
-import org.jassetmanager.AssetBundle;
-import org.jassetmanager.AssetFile;
-import org.jassetmanager.Manipulator;
+import org.jassetmanager.*;
+
+import java.io.IOException;
 
 public class CounterManipulator implements Manipulator {
     public static int counter = 1;
@@ -11,8 +11,16 @@ public class CounterManipulator implements Manipulator {
         counter = 1;
     }
 
-    public byte[] manipulate(AssetBundle bundle, AssetFile assetFile, byte[] content) {
-        return new StringBuilder("/* Counter: " + counter++ + " */\r\n")
-                    .append(new String(content)).toString().getBytes();
+    public void preManipulate(Asset asset, boolean isLast) throws AssetException, IOException {
+
+    }
+
+    public void postManipulate(Bundle bundle) throws AssetException, IOException {
+        byte[] manipulatedContent = new StringBuilder()
+                    .append("/* Counter: ").append(counter).append(" */\r\n")
+                    .append(new String(bundle.getContent())).toString().getBytes();
+
+        bundle.setManipulatedContent(manipulatedContent);
+        counter++;
     }
 }

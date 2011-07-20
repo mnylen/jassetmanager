@@ -6,7 +6,7 @@ public class BrowserMatchers {
     public static final UserAgentMatcher ANY = new UserAgentMatcher() {
         public boolean matches(String userAgent) {
             return true;
-        };
+        }
     };
 
     public static final UserAgentMatcher MSIE = new UserAgentMatcher() {
@@ -14,6 +14,6 @@ public class BrowserMatchers {
 
         public boolean matches(String userAgent) {
             return PATTERN.matcher(userAgent).find();
-        };
+        }
     };
 }
