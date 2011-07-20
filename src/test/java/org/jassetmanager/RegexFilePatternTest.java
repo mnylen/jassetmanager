@@ -11,9 +11,9 @@ import static org.mockito.Mockito.mock;
 public class RegexFilePatternTest {
     @Test
     public void testMatchesPathAgainstTheRegex() throws Exception {
-        ServletContext mockContext = mock(ServletContext.class);
-        AssetFile matchingAssetFile = new AssetFile("/css/buttons.css", mockContext);
-        AssetFile notMatchingAssetFile = new AssetFile("/css/something.else", mockContext);
+        FileSystem mockFs = mock(FileSystem.class);
+        Asset matchingAssetFile = new Asset(mockFs, "/css/buttons.css");
+        Asset notMatchingAssetFile = new Asset(mockFs, "/css/something.else");
         String regex = "/css/.+\\.css";
 
         FilePattern pattern = new RegexFilePattern(regex);

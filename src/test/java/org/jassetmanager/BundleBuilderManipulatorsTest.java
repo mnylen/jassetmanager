@@ -8,19 +8,13 @@ import org.junit.Test;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
 
-import javax.servlet.ServletContext;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class BundleBuilderManipulatorsTest {
-    private List<AssetFile> allAssetFiles;
     private Bundle bundle;
 
     @Before
@@ -40,7 +34,7 @@ public class BundleBuilderManipulatorsTest {
         when(mockFs.getContent(mainCss)).thenReturn(
                 "body { background-color: #000; }".getBytes());
         
-        AssetBundleConfiguration config = new AssetBundleConfiguration()
+        BundleConfiguration config = new BundleConfiguration()
                 .addFilePattern(new RegexFilePattern("/css/reset.css"))
                 .addFilePattern(new RegexFilePattern("/css/main.css"))
                 .addPreManipulator(new FileNameAppenderManipulator())

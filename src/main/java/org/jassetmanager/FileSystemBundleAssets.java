@@ -104,6 +104,6 @@ class AssetIterator implements Iterator<Asset> {
     }
 
     public void remove() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 }

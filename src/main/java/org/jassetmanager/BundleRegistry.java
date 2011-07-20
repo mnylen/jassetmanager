@@ -2,19 +2,23 @@ package org.jassetmanager;
 
 import java.util.*;
 
-public class AssetRegistry {
+public class BundleRegistry {
     private Map<String, List<RegistryEntry>> registryEntryMap;
 
-    public AssetRegistry() {
+    public BundleRegistry() {
         this.registryEntryMap = Collections.synchronizedMap(new HashMap<String, List<RegistryEntry>>());
     }
 
-    public void register(String path, String serveAsMimeType, UserAgentMatcher userAgentMatcher, AssetBundle bundle) {
+    public void register(String path,
+                         String serveAsMimeType,
+                         UserAgentMatcher userAgentMatcher,
+                         Bundle bundle, BundleBuilder builder) {
+        
         if (!(this.registryEntryMap.containsKey(path))) {
             this.registryEntryMap.put(path, new ArrayList<RegistryEntry>());
         }
         
-        this.registryEntryMap.get(path).add(new RegistryEntry(serveAsMimeType, userAgentMatcher, bundle));
+        this.registryEntryMap.get(path).add(new RegistryEntry(serveAsMimeType, userAgentMatcher, bundle, builder));
     }
 
     public RegistryEntry get(String path, String userAgent) {
@@ -35,24 +39,34 @@ public class AssetRegistry {
     class RegistryEntry {
         private final String serveAsMimeType;
         private final UserAgentMatcher userAgentMatcher;
-        private final AssetBundle bundle;
+        private final Bundle bundle;
+        private final BundleBuilder builder;
 
-        public RegistryEntry(final String serveAsMimeType, final UserAgentMatcher userAgentMatcher, final AssetBundle bundle) {
+        public RegistryEntry(final String serveAsMimeType,
+                             final UserAgentMatcher userAgentMatcher,
+                             final Bundle bundle,
+                             final BundleBuilder builder) {
+            
             this.serveAsMimeType = serveAsMimeType;
             this.userAgentMatcher = userAgentMatcher;
             this.bundle = bundle;
+            this.builder = builder;
+        }
+
+        public BundleBuilder getBuilder() {
+            return this.builder;
         }
 
         public String getServeAsMimeType() {
-            return serveAsMimeType;
+            return this.serveAsMimeType;
         }
 
         public UserAgentMatcher getUserAgentMatcher() {
-            return userAgentMatcher;
+            return this.userAgentMatcher;
         }
 
-        public AssetBundle getBundle() {
-            return bundle;
+        public Bundle getBundle() {
+            return this.bundle;
         }
     }
 }

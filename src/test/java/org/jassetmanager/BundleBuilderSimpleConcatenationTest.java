@@ -31,7 +31,7 @@ public class BundleBuilderSimpleConcatenationTest {
         when(mockFs.getContent(mainCss)).thenReturn(
                 "body { background-color: #000; }".getBytes());
 
-        AssetBundleConfiguration config = new AssetBundleConfiguration()
+        BundleConfiguration config = new BundleConfiguration()
                 .addFilePattern(new RegexFilePattern("/css/reset.css"))
                 .addFilePattern(new RegexFilePattern("/css/main.css"));
 

@@ -13,10 +13,6 @@ public class FailingBundleAssetServlet extends SimpleAssetConcatenationServlet {
         super.init(config);
 
         super.config.addPostManipulator(new Manipulator() {
-            public byte[] manipulate(AssetBundle bundle, AssetFile assetFile, byte[] content) throws AssetException {
-                throw new AssetException("I, Fail");
-            }
-
             public void preManipulate(Asset asset, boolean isLast) throws AssetException, IOException {
                 
             }

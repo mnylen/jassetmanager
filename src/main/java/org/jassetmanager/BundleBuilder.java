@@ -7,9 +7,9 @@ import java.util.Iterator;
 public class BundleBuilder {
     private static final byte[] ASSET_SEPARATOR = new byte[] { '\r', '\n' };
     private final FileSystem fs;
-    private final AssetBundleConfiguration configuration;
+    private final BundleConfiguration configuration;
 
-    public BundleBuilder(AssetBundleConfiguration configuration,
+    public BundleBuilder(BundleConfiguration configuration,
                          FileSystem fs) {
 
         this.configuration = configuration;

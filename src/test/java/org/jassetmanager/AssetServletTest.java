@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.eclipse.jetty.testing.HttpTester;
 import org.eclipse.jetty.testing.ServletTester;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static org.junit.Assert.assertThat;

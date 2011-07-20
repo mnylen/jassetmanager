@@ -2,7 +2,6 @@ package org.jassetmanager;
 
 import org.eclipse.jetty.testing.HttpTester;
 import org.eclipse.jetty.testing.ServletTester;
-import org.hamcrest.CoreMatchers;
 import org.jassetmanager.testservlets.FailingBundleAssetServlet;
 import org.jassetmanager.testservlets.FailingBundleDebugModeAssetServlet;
 import org.junit.Test;
