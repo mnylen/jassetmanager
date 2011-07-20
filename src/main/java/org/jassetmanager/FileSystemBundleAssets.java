@@ -12,6 +12,11 @@ public class FileSystemBundleAssets implements BundleAssets {
     public FileSystemBundleAssets(FileSystem fs, String root, List<FilePattern> filePatterns) {
         this.fs = fs;
         this.filePatterns = filePatterns;
+
+        if (root.charAt(root.length()-1) != '/') {
+            root = root + "/";
+        }
+        
         this.root = root;
         this.resolvedAssets = new HashMap<Integer, List<Asset>>();
     }
