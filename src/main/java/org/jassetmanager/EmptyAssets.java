@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 public class EmptyAssets implements BundleAssets {
     public Iterator<Asset> getAssets() {
-        return Collections.emptyIterator();
+        return new EmptyIterator<Asset>();
     }
 
     public long getLastModified() {

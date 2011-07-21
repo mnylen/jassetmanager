@@ -88,7 +88,7 @@ class AssetIterator implements Iterator<Asset> {
             if (this.positionIterator.hasNext()) {
                 this.positionAssetsIterator = this.map.get(this.positionIterator.next()).iterator();
             } else {
-                this.positionAssetsIterator = Collections.emptyIterator();
+                this.positionAssetsIterator = new EmptyIterator<Asset>();
             }
         }
 
@@ -104,11 +104,11 @@ class AssetIterator implements Iterator<Asset> {
         if (this.positionIterator.hasNext()) {
             this.positionAssetsIterator = this.map.get(this.positionIterator.next()).iterator();
         } else {
-            this.positionAssetsIterator = Collections.emptyIterator();
+            this.positionAssetsIterator = new EmptyIterator<Asset>();
         }
     }
 
     public void remove() {
-        
+        throw new UnsupportedOperationException();
     }
 }
