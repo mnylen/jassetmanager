@@ -5,5 +5,5 @@ target/
 
 # IntelliJ IDEA files
 .idea/
-jassetmanager.iml
+*.iml
 
