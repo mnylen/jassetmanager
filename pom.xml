@@ -6,24 +6,22 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jassetmanager</groupId>
     <artifactId>jassetmanager</artifactId>
-    <name>jassetmanager</name>
-    <version>0.0.1-alpha</version>
+    <name>jAssetManager</name>
+    <version>0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>jassetmanager-core</module>
+    </modules>
+
+    <scm>
+        <connection>scm:git:git://github.com/mnylen/jassetmanager.git</connection>
+        <developerConnection>scm:git:git@github.com:mnylen/jassetmanager.git</developerConnection>
+        <url>http://github.com/mnylen/jassetmanager</url>
+    </scm>
+    
 
     <dependencies>
-        <dependency>
-            <scope>provided</scope>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-        </dependency>
-
-        <dependency>
-            <scope>compile</scope>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-        
         <dependency>
             <scope>test</scope>
             <groupId>junit</groupId>
@@ -36,20 +34,6 @@
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
             <version>1.1</version>
-        </dependency>
-
-        <dependency>
-            <scope>test</scope>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-            <version>7.1.0.v20100505</version>
-        </dependency>
-
-        <dependency>
-            <scope>test</scope>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>test-jetty-servlet</artifactId>
-            <version>7.1.0.v20100505</version>
         </dependency>
 
         <dependency>
