@@ -17,12 +17,7 @@ public class AssetServletTest {
 
     @Before
     public void setUp() throws Exception {
-        this.tester = new ServletTester();
-        this.tester.setClassLoader(AssetServlet.class.getClassLoader());
-        this.tester.setContextPath("/");
-        this.tester.setResourceBase("src/test/resources");
-        this.tester.addServlet(SimpleAssetConcatenationServlet.class, "*.css");
-        this.tester.start();
+        this.tester = RequestUtil.createAndStartServletTester(SimpleAssetConcatenationServlet.class, "*.css");
     }
 
     @Test

@@ -19,13 +19,7 @@ public class AssetServletBuildStrategiesTest {
 
     @Test
     public void testCachesWhenBuildOnce() throws Exception {
-        ServletTester tester = new ServletTester();
-        tester.setClassLoader(CachingAssetServlet.class.getClassLoader());
-        tester.setContextPath("/");
-        tester.setResourceBase("src/test/resources");
-        tester.addServlet(CachingAssetServlet.class, "*.css");
-        tester.start();
-
+        ServletTester tester = RequestUtil.createAndStartServletTester(CachingAssetServlet.class, "*.css");
         RequestUtil.getResponse(tester, "/css/application.css");
         HttpTester secondResponse = RequestUtil.getResponse(tester, "/css/application.css");
 
@@ -40,14 +34,7 @@ public class AssetServletBuildStrategiesTest {
 
     @Test
     public void testDoesNotCacheWhenAlwaysRebuild() throws Exception {
-        ServletTester tester = new ServletTester();
-        tester.setClassLoader(NonCachingAssetServlet.class.getClassLoader());
-        tester.setContextPath("/");
-        tester.setResourceBase("src/test/resources");
-        tester.addServlet(NonCachingAssetServlet.class, "*.css");
-        tester.start();
-
-
+        ServletTester tester = RequestUtil.createAndStartServletTester(NonCachingAssetServlet.class, "*.css");
         RequestUtil.getResponse(tester, "/css/application.css");
         HttpTester secondResponse = RequestUtil.getResponse(tester, "/css/application.css");
 
