@@ -83,7 +83,7 @@ public class BundleConfiguration {
             throw new IllegalArgumentException("pattern must not be null");
         }
 
-        this.filePatterns.add(new RegexFilePattern(pattern));
+        this.filePatterns.add(new SimpleFilePattern(pattern));
         return this;
     }
 
