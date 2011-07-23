@@ -32,6 +32,8 @@ public class BundleBuilder {
     }
 
     private void doBuild(Bundle bundle, BundleAssets assets) throws IOException, AssetException {
+        LOG.info("Building bundle...");
+        
         ByteArrayOutputStream contentStream = new ByteArrayOutputStream();
         Iterator<Asset> it = assets.getAssets();
 
@@ -40,7 +42,7 @@ public class BundleBuilder {
             LOG.info("Concatenating '" + asset.getContextPath() + "' to bundle.");
             
             for (Manipulator manipulator : this.configuration.getPreManipulators()) {
-                LOG.debug("\tPre manipulating '" + asset.getContextPath() + "' with '" + manipulator.toString() + "'");
+                LOG.debug("Pre manipulating '" + asset.getContextPath() + "' with '" + manipulator.toString() + "'");
                 manipulator.preManipulate(asset, it.hasNext());
             }
 
