@@ -66,26 +66,28 @@ user agent. The fourth is the actual bundle configuration.
 ### File patterns
 
 File patterns are what matches your assets in the servlet's context to be
-included to a bundle. You can add as many of them as you like and the resulting
-concatenation preserves the order you added them in. On the
-background, each file pattern is compiled as a regular expression, so if you
-want to include, let's say, all the _.css_ files, you might do something like
-this:
+part of the bundle. You can add as many of them as you like and the resulting
+concatenation preserves the order you added them in. If you want to match
+multiple assets with a single file pattern, you might want to use
+`RegexFilePattern`:
 
 	new BundleConfiguration()
 		// some other configuration
-		.addFilePattern("/static/css/.+\\.css");
-		
-If the bundled `RegexFilePattern` isn't enough, you can easily roll your own by implementing
-the `FilePattern` interface.
+		.addFilePattern(new RegexFilePattern("/static/css/.+\\.css"));
+
+This would match any _.css_ resource inside _/static/css_ in your servlet's context
+and include them in the resulting bundle.
 
 By default the `AssetServlet` will try to match all assets inside your servlet's context to
 the bundle. If you have a lot of files, you can aid it a bit by providing _context root path_,
-the longest common subdirectory where all the assets for the bundle reside:
+the longest common subdirectory where all the bundle assets are located:
 
 	new BundleConfiguration()
 		.setContextRootPath("/static/css")
-		.addFilePattern("/static/css/.+\\.css");
+		.addFilePattern(new RegexFilePattern("/static/css/.+\\.css"));
+
+If you need custom matching logic, you can implement the `FilePattern` interface. 
+
 
 ### Manipulators
 
