@@ -12,14 +12,25 @@ public class BundleRegistry {
     public void register(String path,
                          String serveAsMimeType,
                          UserAgentMatcher userAgentMatcher,
-                         Bundle bundle,
-                         BundleBuilder builder) {
-        
+                         BundleConfiguration configuration) {
+
+        this.addEntry(path, new RegistryEntry(serveAsMimeType, userAgentMatcher, configuration));
+    }
+
+    public void register(String path,
+                         String serveAsMimeType,
+                         UserAgentMatcher userAgentMatcher,
+                         PrebuiltBundle bundle) {
+
+        this.addEntry(path, new RegistryEntry(serveAsMimeType, userAgentMatcher, bundle));
+    }
+
+    private void addEntry(String path, RegistryEntry entry) {
         if (!(this.registryEntryMap.containsKey(path))) {
             this.registryEntryMap.put(path, new ArrayList<RegistryEntry>());
         }
-        
-        this.registryEntryMap.get(path).add(new RegistryEntry(serveAsMimeType, userAgentMatcher, bundle, builder));
+
+        this.registryEntryMap.get(path).add(entry);
     }
 
     public RegistryEntry get(String path, String userAgent) {
@@ -41,25 +52,30 @@ public class BundleRegistry {
         private final String serveAsMimeType;
         private final UserAgentMatcher userAgentMatcher;
         private final Bundle bundle;
-        private final BundleBuilder builder;
+        private final BundleConfiguration configuration;
 
         public RegistryEntry(final String serveAsMimeType,
                              final UserAgentMatcher userAgentMatcher,
-                             final Bundle bundle,
-                             final BundleBuilder builder) {
+                             final BundleConfiguration configuration) {
             
             this.serveAsMimeType = serveAsMimeType;
             this.userAgentMatcher = userAgentMatcher;
-            this.bundle = bundle;
-            this.builder = builder;
+            this.bundle = new Bundle();
+            this.configuration = configuration;
+        }
+
+        public RegistryEntry(final String serveAsMimeType,
+                             final UserAgentMatcher userAgentMatcher,
+                             final PrebuiltBundle prebuiltBundle) {
+
+            this.serveAsMimeType = serveAsMimeType;
+            this.userAgentMatcher = userAgentMatcher;
+            this.bundle = prebuiltBundle;
+            this.configuration = null;
         }
 
         public boolean isPrebuilt() {
             return (this.bundle instanceof PrebuiltBundle);
-        }
-
-        public BundleBuilder getBuilder() {
-            return this.builder;
         }
 
         public String getServeAsMimeType() {
@@ -72,6 +88,10 @@ public class BundleRegistry {
 
         public Bundle getBundle() {
             return this.bundle;
+        }
+
+        public BundleConfiguration getConfiguration() {
+            return configuration;
         }
     }
 }

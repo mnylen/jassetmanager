@@ -13,7 +13,7 @@ import static org.mockito.Mockito.*;
 public class BundleBuilderSimpleConcatenationTest {
     private Bundle bundle;
     private BundleBuilder builder;
-    
+
     @Before
     public void setUp() throws Exception {
         FileSystem mockFs = mock(FileSystem.class);
