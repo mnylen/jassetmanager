@@ -10,6 +10,23 @@
     <version>0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
+    <developers>
+        <developer>
+            <id>mnylen</id>
+            <name>Mikko Nylén</name>
+            <timezone>2</timezone>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+
     <modules>
         <module>jassetmanager-core</module>
     </modules>

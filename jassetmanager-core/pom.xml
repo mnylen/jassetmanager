@@ -16,17 +16,6 @@
     <name>jAssetManager Core Libs</name>
     <version>${project.parent.version}</version>
 
-    <developers>
-        <developer>
-            <id>mnylen</id>
-            <name>Mikko Nylén</name>
-            <timezone>2</timezone>
-            <roles>
-                <role>developer</role>
-            </roles>
-        </developer>
-    </developers>
-
     <dependencies>
         <dependency>
             <scope>provided</scope>
