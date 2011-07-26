@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.jassetmanager</groupId>
         <artifactId>jassetmanager</artifactId>
-        <version>0.1</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
 
     <groupId>org.jassetmanager</groupId>
     <artifactId>jassetmanager-core</artifactId>
     <name>jAssetManager Core Libs</name>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
