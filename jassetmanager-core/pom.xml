@@ -14,7 +14,7 @@
     <groupId>org.jassetmanager</groupId>
     <artifactId>jassetmanager-core</artifactId>
     <name>jAssetManager Core Libs</name>
-    <version>0.1</version>
+    <version>0.1-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
