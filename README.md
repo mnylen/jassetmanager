@@ -57,6 +57,8 @@ Now just extend the `AssetServlet` and configure your bundles:
 		
 		@Override
 		public void init(ServletConfig config) throws ServletException {
+			super.init(config);
+			
 			super.configureBundle("/assets/application.css", "text/css", BrowserMatchers.ANY,
 				new BundleConfiguraton()
 					.addFilePattern("/static/css/reset.css") // these should be located
