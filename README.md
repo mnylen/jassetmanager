@@ -26,7 +26,18 @@ Manages your static assets in Java web applications like a boss:
 
 ## Usage
 
-First, drop the jar into your application. Then, add the following to your web.xml:
+If you are using Maven, add the following to your pom.xml:
+
+	<dependency>
+		<groupId>org.jassetmanager</groupId>
+		<artifactId>jassetmanager-core</artifactId>
+		<version>0.1</version>
+	</dependency>
+	
+Otherwise, download [_jassetmanager-core-0.1.jar_](https://github.com/downloads/mnylen/jassetmanager/jassetmanager-core-0.1.jar)
+and drop it to your project in addition.
+	
+Then, add the following to your web.xml:
 
 	<servlet>
 		<servlet-name>assets</servlet-name>
