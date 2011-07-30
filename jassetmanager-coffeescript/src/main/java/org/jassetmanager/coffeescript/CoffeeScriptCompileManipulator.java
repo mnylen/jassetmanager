@@ -6,11 +6,8 @@ import org.jassetmanager.Bundle;
 import org.jassetmanager.Manipulator;
 import org.jcoffeescript.JCoffeeScriptCompileException;
 import org.jcoffeescript.JCoffeeScriptCompiler;
-import org.jcoffeescript.Option;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
 
 public class CoffeeScriptCompileManipulator implements Manipulator {
     private final CompileOptions options;
@@ -38,11 +35,6 @@ public class CoffeeScriptCompileManipulator implements Manipulator {
         }
     }
 
-    public void postManipulate(Bundle bundle) throws AssetException, IOException {
-        throw new UnsupportedOperationException(
-                "CoffeeScriptCompileManipulator should be used as pre manipulator.");
-    }
-
     private boolean isCoffeeScriptAsset(Asset asset) {
         int lastDotPos = asset.getContextPath().lastIndexOf('.');
 
@@ -57,5 +49,10 @@ public class CoffeeScriptCompileManipulator implements Manipulator {
         }
 
         return false;
+    }
+
+    public void postManipulate(Bundle bundle) throws AssetException, IOException {
+        throw new UnsupportedOperationException(
+                "CoffeeScriptCompileManipulator should be used as pre manipulator.");
     }
 }
