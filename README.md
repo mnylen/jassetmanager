@@ -23,6 +23,12 @@ Manages your static assets in Java web applications like a boss:
 * Except for the obvious Servlet API and commons-logging, no dependencies on
   the core! You can start using jAssetManager by just dropping the jar to your
   application.
+  
+Also check out
+
+* [jassetmanager-coffeescript](https://github.com/mnylen/jassetmanager/tree/master/jassetmanager-coffeescript)
+  for manipulator compiling CoffeeScript into JavaScript
+
 
 ## Usage
 
