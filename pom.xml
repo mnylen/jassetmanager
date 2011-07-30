@@ -27,6 +27,7 @@
 
     <modules>
         <module>jassetmanager-core</module>
+        <module>jassetmanager-coffeescript</module>
     </modules>
 
     <licenses>
